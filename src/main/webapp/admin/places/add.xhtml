@@ -1,0 +1,266 @@
+
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/admin/static/template.xhtml">
+
+
+	<ui:define name="breadcrumb">
+		<p:breadCrumb>
+			<p:menuitem value="#{msg.admin_menu_home}"
+				title="#{msg.admin_menu_home}" url="../index.jsf" />
+			<p:menuitem value="#{msg.admin_menu_data}"
+				title="#{msg.admin_menu_data}" url="#" />
+			<p:menuitem value="#{msg.admin_menu_data_places}"
+				title="#{msg.admin_menu_data_places}" url="main.jsf" />
+			<p:menuitem value="#{msg.admin_entity_add}"
+				title="#{msg.admin_entity_add}" url="#" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h1>
+			<h:outputText value="#{msg.admin_entity_add}" />
+		</h1>
+
+		<h:form styleClass="adminForm" enctype="multipart/form-data" id="form">
+
+
+			<p:fieldset>
+				<p:panelGrid>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel value="#{msg.admin_places_field_name}" for="name" />
+							<p:inputText id="name" value="#{placesBean.bean.name}"
+								required="true" requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="name"
+								value="#{msg.admin_places_field_name_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="name" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol" />
+							<h:outputLabel value="#{msg.admin_places_field_location}"
+								for="location" />
+							<p:inputText id="location" value="#{placesBean.bean.location}"
+								required="true" requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="location"
+								value="#{msg.admin_places_field_location_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="location" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol" />
+							<h:outputLabel value="#{msg.admin_places_field_coordinates}"
+								for="coordinates" />
+							<p:inputText id="coordinates"
+								value="#{placesBean.bean.mapCoordinates}" required="true"
+								requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="coordinates"
+								value="#{msg.admin_places_field_coordinates_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="coordinates" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="  " styleClass="requiredSymbol" />
+							<h:outputLabel value="#{msg.admin_places_field_description}"
+								for="description" />
+							<p:inputTextarea id="description"
+								value="#{placesBean.bean.description}" />
+							<p:tooltip for="description"
+								value="#{msg.admin_places_field_description_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="description" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<br />
+							<h:outputLabel value="#{msg.admin_places_field_photo}"
+								for="photo" />
+							<p:commandButton
+								value="#{msg.admin_places_field_photo_btn_remove}" ajax="false"
+								style="float:right;margin-top: -10px;" immediate="true"
+								actionListener="#{placesBean.removePhoto}" />
+							<p:fileUpload id="photo"
+								fileUploadListener="#{placesBean.handlePhotoUpload}"
+								mode="advanced" auto="true" update="photoPreview"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+						</p:column>
+						<p:column>
+							<p:graphicImage id="photoPreview"
+								value="#{placesBean.streamedPhoto}" cache="false"
+								style="max-height:100px;max-width:200px;" />
+						</p:column>
+					</p:row>
+
+				</p:panelGrid>
+			</p:fieldset>
+
+			<br />
+
+			<p:fieldset>
+				<h:outputText
+					value="Create relations from these transportations (Drag to create new ones)" />
+				<p:outputPanel autoUpdate="true">
+					<p:pickList value="#{placesBean.relationsDuallist}" var="relation"
+						itemValue="#{relation}" itemLabel="#{relation.transports.name}"
+						converter="pickListConverter" showSourceFilter="true"
+						showTargetFilter="true" filterMatchMode="contains">
+						<p:ajax event="transfer"
+							listener="#{placesBean.handleRelationsSelection}" />
+
+						<f:facet name="sourceCaption">Transports Available</f:facet>
+						<f:facet name="targetCaption">Relations with other places</f:facet>
+
+						<p:column style="width:50%">
+							<h:outputText value="#{relation.transports.name}" />
+						</p:column>
+
+						<p:column style="width:50%;">
+							<h:outputText rendered="#{not empty relation.destination}"
+								value="#{relation.destination.name}" />
+						</p:column>
+					</p:pickList>
+				</p:outputPanel>
+			</p:fieldset>
+
+			<br />
+
+			<p:fieldset>
+				<h:outputText
+					value="Then select the relation and edit its properties:" />
+				<p:panelGrid>
+
+					<p:row>
+						<p:column>
+							<p:outputPanel autoUpdate="true">
+								<p:dataTable id="dataTable" style="width: 270px;"
+									emptyMessage="#{msg.primefaces_datatable_empty_message}"
+									rowKey="#{element.transports}#{element.destination}#{element.randomDifferenciator}"
+									var="element" value="#{placesBean.relationsDuallist.target}"
+									selectionMode="single" selection="#{placesBean.relationBean}">
+									<p:ajax event="rowSelect" update=":form:relationFields" />
+									<p:column>
+										<f:facet name="header">
+											<h:outputText
+												value="#{msg.admin_places_relations_datatable_transport}" />
+										</f:facet>
+										<h:outputText value="#{element.transports.name}" />
+										<h:outputText rendered="#{not empty element.destination}"
+											value=" - #{element.destination.name}" />
+									</p:column>
+								</p:dataTable>
+							</p:outputPanel>
+						</p:column>
+						<p:column>
+							<p:fragment>
+								<p:fieldset>
+									<p:panelGrid id="relationFields">
+										<p:row>
+											<p:column colspan="2">
+												<h2>
+													<h:outputText
+														value="#{placesBean.relationBean.transports.name}" />
+												</h2>
+											</p:column>
+										</p:row>
+										<p:row>
+											<p:column styleClass="inputColumn">
+												<h:outputText value="* " styleClass="requiredSymbol"
+													title="This field is required" />
+												<h:outputLabel value="#{msg.admin_places_field_moneycost}"
+													for="moneycost" />
+												<p:inputText maxlength="10" id="moneycost"
+													disabled="#{empty placesBean.relationBean}"
+													value="#{placesBean.relationBean.moneyCost}"
+													required="true"
+													requiredMessage="#{msg.required_field_message}">
+													<f:validator binding="#{currencyValidator}" />
+													<p:ajax listener="#{placesBean.saveRelationDetails}" />
+												</p:inputText>
+												<p:tooltip for="moneycost"
+													value="#{msg.admin_places_field_moneycost_tooltip}" />
+											</p:column>
+											<p:column styleClass="messagesColumn">
+												<p:message for="moneycost" />
+											</p:column>
+										</p:row>
+										<p:row>
+											<p:column styleClass="inputColumn">
+												<h:outputText value="* " styleClass="requiredSymbol" />
+												<h:outputLabel
+													value="#{msg.admin_quests_field_destinationplace}"
+													for="destinationplace" />
+												<br />
+												<p:selectOneMenu id="destinationplace" required="true"
+													requiredMessage="#{msg.required_field_message}"
+													value="#{placesBean.relationBean.destination}"
+													disabled="#{empty placesBean.relationBean or placesBean.relationBean.id.placesDestination != 0}">
+													<p:ajax listener="#{placesBean.saveRelationDetails}" />
+													<f:converter binding="#{placesConverter}" />
+													<f:selectItems value="#{placesBean.list}" var="place"
+														itemLabel="#{place.name} - #{place.location}"
+														itemValue="#{place}" />
+												</p:selectOneMenu>
+												<br />
+												<h:outputText
+													value="To change the destination, remove this relation first and save. Then create a new one"
+													rendered="#{placesBean.relationBean.id.placesDestination != 0}" />
+												<p:tooltip for="destinationplace"
+													value="#{msg.admin_quests_field_destinationplace_tooltip}" />
+											</p:column>
+											<p:column styleClass="messagesColumn">
+												<p:message for="destinationplace" />
+											</p:column>
+										</p:row>
+									</p:panelGrid>
+								</p:fieldset>
+							</p:fragment>
+
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+			</p:fieldset>
+
+			<br />
+
+			<p:toolbar>
+				<f:facet name="left">
+					<p:commandButton label="#{msg.admin_entity_save}"
+						value="#{msg.admin_entity_save}" title="#{msg.admin_entity_save}"
+						action="#{placesBean.save}" icon="ui-icon ui-icon-disk"
+						update="@form" ajax="false" />
+					<p:commandButton label="#{msg.admin_entity_cancel}"
+						value="#{msg.admin_entity_cancel}" action="#{placesBean.cancel}"
+						title="#{msg.admin_entity_cancel}" icon="ui-icon ui-icon-cancel"
+						immediate="true" ajax="false" />
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

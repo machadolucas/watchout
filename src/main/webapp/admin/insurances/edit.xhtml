@@ -1,0 +1,338 @@
+
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/admin/static/template.xhtml">
+
+
+	<ui:define name="breadcrumb">
+		<p:breadCrumb>
+			<p:menuitem value="#{msg.admin_menu_home}"
+				title="#{msg.admin_menu_home}" url="../index.jsf" />
+			<p:menuitem value="#{msg.admin_menu_risks}"
+				title="#{msg.admin_menu_risks}" url="#" />
+			<p:menuitem value="#{msg.admin_menu_risks_insurances}"
+				title="#{msg.admin_menu_risks_insurances}" url="main.jsf" />
+			<p:menuitem value="#{msg.admin_entity_edit}"
+				title="#{msg.admin_entity_edit}" url="#" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h1>
+			<h:outputText value="#{msg.admin_entity_edit}" />
+		</h1>
+
+		<h:form styleClass="adminForm"  enctype="multipart/form-data" id="form">
+
+			<p:fieldset>
+				<p:panelGrid>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel value="#{msg.admin_insurances_field_name}"
+								for="name" />
+							<p:inputText id="name" value="#{insurancesBean.bean.name}"
+								required="true" requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="name"
+								value="#{msg.admin_insurances_field_name_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="name" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="  " styleClass="requiredSymbol" />
+							<h:outputLabel value="#{msg.admin_insurances_field_description}"
+								for="description" />
+							<p:inputTextarea id="description"
+								value="#{insurancesBean.bean.description}" />
+							<p:tooltip for="description"
+								value="#{msg.admin_insurances_field_description_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="description" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel value="#{msg.admin_insurances_field_cost}"
+								for="cost" />
+							<p:inputText id="cost" value="#{insurancesBean.bean.cost}"
+								required="true" requiredMessage="#{msg.required_field_message}">
+								<f:validator binding="#{currencyValidator}" />
+							</p:inputText>
+							<p:tooltip for="cost"
+								value="#{msg.admin_insurances_field_cost_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="cost" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<br />
+							<h:outputLabel value="#{msg.admin_insurances_field_icon}"
+								for="icon" />
+							<p:commandButton
+								value="#{msg.admin_insurances_field_icon_btn_remove}"
+								ajax="false" style="float:right;margin-top: -10px;"
+								immediate="true" actionListener="#{insurancesBean.removeIcon}" />
+							<p:fileUpload id="icon"
+								fileUploadListener="#{insurancesBean.handleIconUpload}"
+								mode="advanced" auto="true" update="iconPreview"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+						</p:column>
+						<p:column>
+							<p:graphicImage id="iconPreview"
+								value="#{insurancesBean.streamedIcon}" cache="false"
+								style="max-height:100px;max-width:200px;" />
+						</p:column>
+					</p:row>
+
+				</p:panelGrid>
+			</p:fieldset>
+
+			<br />
+
+			<p:fieldset toggleable="true"
+				legend="#{msg.admin_insurances_field_fieldset_transportationrisks}">
+				<h:outputText styleClass="fieldset-instructions"
+					value="Select which transportation risks this insurance covers" />
+				<p:outputPanel autoUpdate="true">
+					<p:pickList value="#{insurancesBean.transportationrisksDuallist}"
+						var="relation" itemValue="#{relation}"
+						itemLabel="#{relation.transportationrisks.name}"
+						converter="pickListConverter" showSourceFilter="true"
+						showTargetFilter="true" filterMatchMode="contains">
+						<p:ajax event="transfer" />
+						<f:facet name="sourceCaption">Available risks</f:facet>
+						<f:facet name="targetCaption">Chosen</f:facet>
+						<p:column>
+							<h:outputText value="#{relation.transportationrisks.name}" />
+						</p:column>
+
+					</p:pickList>
+				</p:outputPanel>
+
+				<br />
+
+				<p:fieldset>
+					<p:panelGrid>
+						<p:row>
+							<p:column>
+								<h:outputText styleClass="fieldset-instructions"
+									value="Select and edit the cover values of the chosen risks" />
+								<p:outputPanel autoUpdate="true">
+									<p:dataTable id="trdataTable" style="width: 400px;"
+										emptyMessage="#{msg.primefaces_datatable_empty_message}"
+										pageLinks="#{msg.primefaces_datatable_pagelinks}"
+										paginator="true" paginatorAlwaysVisible="false"
+										rowKey="#{element.id}" rows="10"
+										selection="#{insurancesBean.triskBean}" var="element"
+										value="#{insurancesBean.transportationrisksDuallist.target}"
+										rowsPerPageTemplate="#{msg.primefaces_table_paginator_rows_per_page_template}"
+										selectionMode="single">
+										<p:ajax event="rowSelect" update=":form:trelationFields" />
+										<p:column sortBy="#{element.transportationrisks.name}"
+											style="width: 65%;">
+											<f:facet name="header">
+												<h:outputText
+													value="#{msg.admin_insurances_field_datatable_name}" />
+											</f:facet>
+											<h:outputText value="#{element.transportationrisks.name}" />
+										</p:column>
+
+										<p:column sortBy="#{element.cover}">
+											<f:facet name="header">
+												<h:outputText
+													value="#{msg.admin_insurances_field_datatable_cover}" />
+											</f:facet>
+											<h:outputText value="#{element.cover}" />
+										</p:column>
+
+									</p:dataTable>
+
+								</p:outputPanel>
+							</p:column>
+
+							<p:column>
+								<p:fragment>
+									<p:fieldset>
+										<p:panelGrid id="trelationFields">
+											<p:row>
+												<p:column colspan="2">
+													<h2>
+														<h:outputText
+															value="#{insurancesBean.triskBean.transportationrisks.name}" />
+													</h2>
+												</p:column>
+											</p:row>
+											<p:row>
+												<p:column styleClass="inputColumn">
+													<h:outputText value="* " styleClass="requiredSymbol"
+														title="This field is required" />
+													<h:outputLabel
+														value="#{msg.admin_insurances_field_bean_cover}"
+														for="tcover" />
+													<p:inputText maxlength="10" id="tcover"
+														disabled="#{empty insurancesBean.triskBean}"
+														value="#{insurancesBean.triskBean.cover}" required="true"
+														requiredMessage="#{msg.required_field_message}">
+														<f:validator binding="#{currencyValidator}" />
+														<p:ajax listener="#{insurancesBean.saveTRelationDetails}" />
+													</p:inputText>
+													<p:tooltip for="tcover"
+														value="#{msg.admin_insurances_field_bean_cover_tooltip}" />
+												</p:column>
+												<p:column styleClass="messagesColumn">
+													<p:message for="tcover" />
+												</p:column>
+											</p:row>
+										</p:panelGrid>
+									</p:fieldset>
+								</p:fragment>
+							</p:column>
+
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+			</p:fieldset>
+
+			<br />
+
+			<p:fieldset toggleable="true"
+				legend="#{msg.admin_insurances_field_fieldset_placesrisks}">
+				<h:outputText styleClass="fieldset-instructions"
+					value="Select which places risks this insurance covers" />
+				<p:outputPanel autoUpdate="true">
+					<p:pickList value="#{insurancesBean.placesrisksDuallist}"
+						var="relation" itemValue="#{relation}"
+						itemLabel="#{relation.placesrisks.name}"
+						converter="pickListConverter" showSourceFilter="true"
+						showTargetFilter="true" filterMatchMode="contains">
+						<p:ajax event="transfer" />
+						<f:facet name="sourceCaption">Available risks</f:facet>
+						<f:facet name="targetCaption">Chosen</f:facet>
+						<p:column>
+							<h:outputText value="#{relation.placesrisks.name}" />
+						</p:column>
+
+					</p:pickList>
+				</p:outputPanel>
+
+				<br />
+
+				<p:fieldset>
+					<p:panelGrid>
+						<p:row>
+							<p:column>
+								<h:outputText styleClass="fieldset-instructions"
+									value="Select and edit the cover values of the chosen risks" />
+								<p:outputPanel autoUpdate="true">
+									<p:dataTable id="prdataTable" style="width: 400px;"
+										emptyMessage="#{msg.primefaces_datatable_empty_message}"
+										pageLinks="#{msg.primefaces_datatable_pagelinks}"
+										paginator="true" paginatorAlwaysVisible="false"
+										rowKey="#{element.id}" rows="10"
+										selection="#{insurancesBean.priskBean}" var="element"
+										value="#{insurancesBean.placesrisksDuallist.target}"
+										rowsPerPageTemplate="#{msg.primefaces_table_paginator_rows_per_page_template}"
+										selectionMode="single">
+										<p:ajax event="rowSelect" update=":form:prelationFields" />
+										<p:column sortBy="#{element.placesrisks.name}"
+											style="width: 65%;">
+											<f:facet name="header">
+												<h:outputText
+													value="#{msg.admin_insurances_field_datatable_name}" />
+											</f:facet>
+											<h:outputText value="#{element.placesrisks.name}" />
+										</p:column>
+
+										<p:column sortBy="#{element.cover}">
+											<f:facet name="header">
+												<h:outputText
+													value="#{msg.admin_insurances_field_datatable_cover}" />
+											</f:facet>
+											<h:outputText value="#{element.cover}" />
+										</p:column>
+
+									</p:dataTable>
+
+								</p:outputPanel>
+							</p:column>
+
+							<p:column>
+								<p:fragment>
+									<p:fieldset>
+										<p:panelGrid id="prelationFields">
+											<p:row>
+												<p:column colspan="2">
+													<h2>
+														<h:outputText
+															value="#{insurancesBean.priskBean.placesrisks.name}" />
+													</h2>
+												</p:column>
+											</p:row>
+											<p:row>
+												<p:column styleClass="inputColumn">
+													<h:outputText value="* " styleClass="requiredSymbol"
+														title="This field is required" />
+													<h:outputLabel
+														value="#{msg.admin_insurances_field_bean_cover}"
+														for="pcover" />
+													<p:inputText maxlength="10" id="pcover"
+														disabled="#{empty insurancesBean.priskBean}"
+														value="#{insurancesBean.priskBean.cover}" required="true"
+														requiredMessage="#{msg.required_field_message}">
+														<f:validator binding="#{currencyValidator}" />
+														<p:ajax listener="#{insurancesBean.savePRelationDetails}" />
+													</p:inputText>
+													<p:tooltip for="pcover"
+														value="#{msg.admin_insurances_field_bean_cover_tooltip}" />
+												</p:column>
+												<p:column styleClass="messagesColumn">
+													<p:message for="pcover" />
+												</p:column>
+											</p:row>
+										</p:panelGrid>
+									</p:fieldset>
+								</p:fragment>
+							</p:column>
+
+						</p:row>
+					</p:panelGrid>
+				</p:fieldset>
+			</p:fieldset>
+			
+			<br />
+
+			<p:toolbar>
+				<f:facet name="left">
+					<p:commandButton label="#{msg.admin_entity_save}"
+						value="#{msg.admin_entity_save}" title="#{msg.admin_entity_save}"
+						action="#{insurancesBean.update}" icon="ui-icon ui-icon-disk"
+						update="@form" ajax="false"  />
+					<p:commandButton label="#{msg.admin_entity_cancel}"
+						value="#{msg.admin_entity_cancel}"
+						action="#{insurancesBean.cancel}"
+						title="#{msg.admin_entity_cancel}" icon="ui-icon ui-icon-cancel"
+						immediate="true" ajax="false"  />
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+
+	</ui:define>
+</ui:composition>

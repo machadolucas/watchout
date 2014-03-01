@@ -1,0 +1,31 @@
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/info/template.xhtml">
+
+	<ui:define name="head">
+		<title>Watch out!</title>
+	</ui:define>
+
+	<ui:define name="content">
+		<div class="content">
+			<h:form>
+				<h2>Where do you want to go?</h2>
+				<p>
+				 You need to move from one place the other every day, but do you know how much risks there are during the way? The reality is, you have to get to work or school everyday and travel long distances for your vacation, so these are risks you need to take and learn to live with. We´ll show you the options and help you choose the best transport method in your situation.
+				</p>
+				<p>
+				Start by choosing between everyday commute and vacation.
+				</p>
+				<div style="margin: 20px 0px 10px 10px;">
+					<a class="init-button blue" href="vis.jsf?type=daily">Daily Commute</a>
+					<a class="init-button green" href="vis.jsf?type=travel">Vacation</a>
+ 				</div>
+			</h:form>
+		</div>
+	</ui:define>
+
+</ui:composition>

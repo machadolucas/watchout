@@ -1,0 +1,274 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+
+	<context:component-scan base-package="com.riskvis" />
+	<context:annotation-config />
+	
+	<!-- Beans Declaration -->
+	<bean id="Admins" class="com.riskvis.entity.Admins" />
+	<bean id="Insurances" class="com.riskvis.entity.Insurances" />
+	<bean id="InsurancesHasPlacesrisks" class="com.riskvis.entity.InsurancesHasPlacesrisks" />
+	<bean id="InsurancesHasPlacesrisksId" class="com.riskvis.entity.InsurancesHasPlacesrisksId" />
+	<bean id="InsurancesHasTransportationrisks" class="com.riskvis.entity.InsurancesHasTransportationrisks" />
+	<bean id="InsurancesHasTransportationrisksId" class="com.riskvis.entity.InsurancesHasTransportationrisksId" />
+	<bean id="Places" class="com.riskvis.entity.Places" />
+	<bean id="PlacesHasTransports" class="com.riskvis.entity.PlacesHasTransports" />
+	<bean id="PlacesHasTransportsId" class="com.riskvis.entity.PlacesHasTransportsId" />
+	<bean id="Placesrisks" class="com.riskvis.entity.Placesrisks" />
+	<bean id="Players" class="com.riskvis.entity.Players" />
+	<bean id="PlayersHasInsurances" class="com.riskvis.entity.PlayersHasInsurances" />
+	<bean id="PlayersHasInsurancesId" class="com.riskvis.entity.PlayersHasInsurancesId" />
+	<bean id="PlayersHasQuests" class="com.riskvis.entity.PlayersHasQuests" />
+	<bean id="PlayersHasQuestsId" class="com.riskvis.entity.PlayersHasQuestsId" />
+	<bean id="QuestInsurances" class="com.riskvis.entity.QuestInsurances" />
+	<bean id="QuestInsurancesId" class="com.riskvis.entity.QuestInsurancesId" />
+	<bean id="Quests" class="com.riskvis.entity.Quests" />
+	<bean id="Transportationrisks" class="com.riskvis.entity.Transportationrisks" />
+	<bean id="Transports" class="com.riskvis.entity.Transports" />
+	<bean id="TurnsHistory" class="com.riskvis.entity.TurnsHistory" />
+	<bean id="TurnsHistoryId" class="com.riskvis.entity.TurnsHistoryId" />
+	<bean id="TurnsHistoryHasPlacesrisks" class="com.riskvis.entity.TurnsHistoryHasPlacesrisks" />
+	<bean id="TurnsHistoryHasPlacesrisksId" class="com.riskvis.entity.TurnsHistoryHasPlacesrisksId" />
+	<bean id="TurnsHistoryHasTransportationrisks" class="com.riskvis.entity.TurnsHistoryHasTransportationrisks" />
+	<bean id="TurnsHistoryHasTransportationrisksId" class="com.riskvis.entity.TurnsHistoryHasTransportationrisksId" />
+
+	<!-- Services Declaration -->
+	<bean id="AdminsService" class="com.riskvis.db.service.impl.AdminsService">
+		<property name="adminsDAO" ref="AdminsDAO" />
+	</bean>
+	<bean id="InsurancesService" class="com.riskvis.db.service.impl.InsurancesService">
+		<property name="insurancesDAO" ref="InsurancesDAO" />
+	</bean>
+	<bean id="InsurancesHasPlacesrisksService"
+		class="com.riskvis.db.service.impl.InsurancesHasPlacesrisksService">
+		<property name="insurancesHasPlacesrisksDAO" ref="InsurancesHasPlacesrisksDAO" />
+	</bean>
+	<bean id="InsurancesHasPlacesrisksIdService"
+		class="com.riskvis.db.service.impl.InsurancesHasPlacesrisksIdService">
+		<property name="insurancesHasPlacesrisksIdDAO" ref="InsurancesHasPlacesrisksIdDAO" />
+	</bean>
+	<bean id="InsurancesHasTransportationrisksService"
+		class="com.riskvis.db.service.impl.InsurancesHasTransportationrisksService">
+		<property name="insurancesHasTransportationrisksDAO" ref="InsurancesHasTransportationrisksDAO" />
+	</bean>
+	<bean id="InsurancesHasTransportationrisksIdService"
+		class="com.riskvis.db.service.impl.InsurancesHasTransportationrisksIdService">
+		<property name="insurancesHasTransportationrisksIdDAO" ref="InsurancesHasTransportationrisksIdDAO" />
+	</bean>
+	<bean id="PlacesService" class="com.riskvis.db.service.impl.PlacesService">
+		<property name="placesDAO" ref="PlacesDAO" />
+	</bean>
+	<bean id="PlacesHasTransportsService" class="com.riskvis.db.service.impl.PlacesHasTransportsService">
+		<property name="placesHasTransportsDAO" ref="PlacesHasTransportsDAO" />
+	</bean>
+	<bean id="PlacesHasTransportsIdService"
+		class="com.riskvis.db.service.impl.PlacesHasTransportsIdService">
+		<property name="placesHasTransportsIdDAO" ref="PlacesHasTransportsIdDAO" />
+	</bean>
+	<bean id="PlacesrisksService" class="com.riskvis.db.service.impl.PlacesrisksService">
+		<property name="placesrisksDAO" ref="PlacesrisksDAO" />
+	</bean>
+	<bean id="PlayersService" class="com.riskvis.db.service.impl.PlayersService">
+		<property name="playersDAO" ref="PlayersDAO" />
+	</bean>
+	<bean id="PlayersHasInsurancesService" class="com.riskvis.db.service.impl.PlayersHasInsurancesService">
+		<property name="playersHasInsurancesDAO" ref="PlayersHasInsurancesDAO" />
+	</bean>
+	<bean id="PlayersHasInsurancesIdService" class="com.riskvis.db.service.impl.PlayersHasInsurancesIdService">
+		<property name="playersHasInsurancesIdDAO" ref="PlayersHasInsurancesIdDAO" />
+	</bean>
+	<bean id="PlayersHasQuestsService" class="com.riskvis.db.service.impl.PlayersHasQuestsService">
+		<property name="playersHasQuestsDAO" ref="PlayersHasQuestsDAO" />
+	</bean>
+	<bean id="PlayersHasQuestsIdService" class="com.riskvis.db.service.impl.PlayersHasQuestsIdService">
+		<property name="playersHasQuestsIdDAO" ref="PlayersHasQuestsIdDAO" />
+	</bean>
+	<bean id="QuestInsurancesService" class="com.riskvis.db.service.impl.QuestInsurancesService">
+		<property name="questInsurancesDAO" ref="QuestInsurancesDAO" />
+	</bean>
+	<bean id="QuestInsurancesIdService" class="com.riskvis.db.service.impl.QuestInsurancesIdService">
+		<property name="questInsurancesIdDAO" ref="QuestInsurancesIdDAO" />
+	</bean>
+	<bean id="QuestsService" class="com.riskvis.db.service.impl.QuestsService">
+		<property name="questsDAO" ref="QuestsDAO" />
+	</bean>
+	<bean id="TransportationrisksService" class="com.riskvis.db.service.impl.TransportationrisksService">
+		<property name="transportationrisksDAO" ref="TransportationrisksDAO" />
+	</bean>
+	<bean id="TransportsService" class="com.riskvis.db.service.impl.TransportsService">
+		<property name="transportsDAO" ref="TransportsDAO" />
+	</bean>
+	<bean id="TurnsHistoryService" class="com.riskvis.db.service.impl.TurnsHistoryService">
+		<property name="turnsHistoryDAO" ref="TurnsHistoryDAO" />
+	</bean>
+	<bean id="TurnsHistoryIdService" class="com.riskvis.db.service.impl.TurnsHistoryIdService">
+		<property name="turnsHistoryIdDAO" ref="TurnsHistoryIdDAO" />
+	</bean>
+	<bean id="TurnsHistoryHasPlacesrisksService" class="com.riskvis.db.service.impl.TurnsHistoryHasPlacesrisksService">
+		<property name="turnsHistoryHasPlacesrisksDAO" ref="TurnsHistoryHasPlacesrisksDAO" />
+	</bean>
+	<bean id="TurnsHistoryHasPlacesrisksIdService" class="com.riskvis.db.service.impl.TurnsHistoryHasPlacesrisksIdService">
+		<property name="turnsHistoryHasPlacesrisksIdDAO" ref="TurnsHistoryHasPlacesrisksIdDAO" />
+	</bean>
+	<bean id="TurnsHistoryHasTransportationrisksService" class="com.riskvis.db.service.impl.TurnsHistoryHasTransportationrisksService">
+		<property name="turnsHistoryHasTransportationrisksDAO" ref="TurnsHistoryHasTransportationrisksDAO" />
+	</bean>
+	<bean id="TurnsHistoryHasTransportationrisksIdService" class="com.riskvis.db.service.impl.TurnsHistoryHasTransportationrisksIdService">
+		<property name="turnsHistoryHasTransportationrisksIdDAO" ref="TurnsHistoryHasTransportationrisksIdDAO" />
+	</bean>
+
+	<!-- DAOs Declaration -->
+	<bean id="AdminsDAO" class="com.riskvis.db.dao.impl.AdminsDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="InsurancesDAO" class="com.riskvis.db.dao.impl.InsurancesDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="InsurancesHasPlacesrisksDAO" class="com.riskvis.db.dao.impl.InsurancesHasPlacesrisksDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="InsurancesHasPlacesrisksIdDAO" class="com.riskvis.db.dao.impl.InsurancesHasPlacesrisksIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="InsurancesHasTransportationrisksDAO"
+		class="com.riskvis.db.dao.impl.InsurancesHasTransportationrisksDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="InsurancesHasTransportationrisksIdDAO"
+		class="com.riskvis.db.dao.impl.InsurancesHasTransportationrisksIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlacesDAO" class="com.riskvis.db.dao.impl.PlacesDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlacesHasTransportsDAO" class="com.riskvis.db.dao.impl.PlacesHasTransportsDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlacesHasTransportsIdDAO" class="com.riskvis.db.dao.impl.PlacesHasTransportsIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlacesrisksDAO" class="com.riskvis.db.dao.impl.PlacesrisksDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlayersDAO" class="com.riskvis.db.dao.impl.PlayersDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlayersHasInsurancesDAO" class="com.riskvis.db.dao.impl.PlayersHasInsurancesDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlayersHasInsurancesIdDAO" class="com.riskvis.db.dao.impl.PlayersHasInsurancesIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlayersHasQuestsDAO" class="com.riskvis.db.dao.impl.PlayersHasQuestsDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="PlayersHasQuestsIdDAO" class="com.riskvis.db.dao.impl.PlayersHasQuestsIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="QuestInsurancesDAO" class="com.riskvis.db.dao.impl.QuestInsurancesDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="QuestInsurancesIdDAO" class="com.riskvis.db.dao.impl.QuestInsurancesIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="QuestsDAO" class="com.riskvis.db.dao.impl.QuestsDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TransportationrisksDAO" class="com.riskvis.db.dao.impl.TransportationrisksDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TransportsDAO" class="com.riskvis.db.dao.impl.TransportsDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TurnsHistoryDAO" class="com.riskvis.db.dao.impl.TurnsHistoryDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TurnsHistoryIdDAO" class="com.riskvis.db.dao.impl.TurnsHistoryIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TurnsHistoryHasPlacesrisksDAO" class="com.riskvis.db.dao.impl.TurnsHistoryHasPlacesrisksDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TurnsHistoryHasPlacesrisksIdDAO" class="com.riskvis.db.dao.impl.TurnsHistoryHasPlacesrisksIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TurnsHistoryHasTransportationrisksDAO" class="com.riskvis.db.dao.impl.TurnsHistoryHasTransportationrisksDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+	<bean id="TurnsHistoryHasTransportationrisksIdDAO" class="com.riskvis.db.dao.impl.TurnsHistoryHasTransportationrisksIdDAO">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+
+	<!-- Data Source Declaration -->
+	<bean id="DataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource"
+		destroy-method="close">
+		<property name="driverClass" value="com.mysql.jdbc.Driver" />
+<!-- 		<property name="jdbcUrl" value="jdbc:mysql://localhost:3306/test" /> -->
+		<property name="jdbcUrl" value="jdbc:mysql://127.13.124.131:3306/test" />
+		<property name="user" value="root" />
+		<property name="password" value="watchout!test" />
+		<property name="maxPoolSize" value="20" />
+		<property name="maxStatements" value="0" />
+		<property name="minPoolSize" value="5" />
+	</bean>
+
+	<!-- Session Factory Declaration -->
+	<bean id="SessionFactory"
+		class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+		<property name="dataSource" ref="DataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.riskvis.entity.Admins</value>
+				<value>com.riskvis.entity.Insurances</value>
+				<value>com.riskvis.entity.InsurancesHasPlacesrisks</value>
+				<value>com.riskvis.entity.InsurancesHasPlacesrisksId</value>
+				<value>com.riskvis.entity.InsurancesHasTransportationrisks</value>
+				<value>com.riskvis.entity.InsurancesHasTransportationrisksId</value>
+				<value>com.riskvis.entity.Places</value>
+				<value>com.riskvis.entity.PlacesHasTransports</value>
+				<value>com.riskvis.entity.PlacesHasTransportsId</value>
+				<value>com.riskvis.entity.Placesrisks</value>
+				<value>com.riskvis.entity.Players</value>
+				<value>com.riskvis.entity.PlayersHasInsurances</value>
+				<value>com.riskvis.entity.PlayersHasInsurancesId</value>
+				<value>com.riskvis.entity.PlayersHasQuests</value>
+				<value>com.riskvis.entity.PlayersHasQuestsId</value>
+				<value>com.riskvis.entity.QuestInsurances</value>
+				<value>com.riskvis.entity.QuestInsurancesId</value>
+				<value>com.riskvis.entity.Quests</value>
+				<value>com.riskvis.entity.Transportationrisks</value>
+				<value>com.riskvis.entity.Transports</value>
+				<value>com.riskvis.entity.TurnsHistory</value>
+				<value>com.riskvis.entity.TurnsHistoryId</value>
+				<value>com.riskvis.entity.TurnsHistoryHasPlacesrisks</value>
+				<value>com.riskvis.entity.TurnsHistoryHasPlacesrisksId</value>
+				<value>com.riskvis.entity.TurnsHistoryHasTransportationrisks</value>
+				<value>com.riskvis.entity.TurnsHistoryHasTransportationrisksId</value>
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<!-- <prop key="hibernate.current_session_context_class">thread</prop> -->
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">false</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- Enable the configuration of transactional behavior based on annotations -->
+	<tx:annotation-driven transaction-manager="txManager" />
+
+	<!-- Transaction Manager is defined -->
+	<bean id="txManager"
+		class="org.springframework.orm.hibernate4.HibernateTransactionManager">
+		<property name="sessionFactory" ref="SessionFactory" />
+	</bean>
+
+</beans>

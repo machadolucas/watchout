@@ -1,0 +1,257 @@
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/info/template.xhtml">
+
+	<ui:define name="head">
+		<title>Watch out!</title>
+		
+	</ui:define>
+
+	<ui:define name="content">
+	   <a href="#{facesContext.externalContext.requestContextPath}/"
+	   	id="back-arrow" title="Back to the homepage">
+	   	<img src="#{facesContext.externalContext.requestContextPath}//static/img/back-arrow.png"/>
+   	</a>
+	   <a onclick="about.show();"
+	   	id="about-button" title="About this website">
+	   	About
+   	</a>
+		<h2 id="vis-title">Transportation risk in <span>...</span></h2>
+		<div id="tooltip" class="hidden">
+        <p><strong class="risk-name">About the risk</strong></p>
+        <p><span class="risk-desc">.</span></p>
+		</div>
+		<div id="vis">
+		</div>
+		<div id="detail" style="background: #888">
+			<h3 style="padding:250px 80px; text-shadow: none; color: #ccc;">Click in one of the transportations to know more.</h3>
+		</div>
+		
+
+		<div class="bottom-bar">
+		   <div class="bar-text">
+		    Filter by:
+		   </div>
+			<ul class="filters">
+				<li><a href="javascript:changeByKm(d3.selectAll('#vis svg rect'))" title="Shows you the risk taken on the distance travelled. Better for evaluating single trips. Graph shows the number of fatalities per billion kilometers.">Km</a></li>
+				<li><a href="javascript:changeByJourney(d3.selectAll('#vis svg rect'))" title="Shows you the risk taken per journey, no matter the distance. Better for evaluating daily trips. Graph shows the number of fatalities per billion journeys">Journeys</a></li>
+				<li><a href="javascript:changeByHour(d3.selectAll('#vis svg rect'))">Hrs</a></li>
+			</ul>
+		</div>
+		
+		<div style="display:none" id="risks-detail">
+			<div class="Bus">
+				<h2>Bus
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>Traveling by bus is one of the safest ways of traveling on the roads, because of the professional drivers and the sheer size of the vehicle. Buses with a capacity of 10 passengers or more represented only 0.1% of the total fatalities. Often when driven off road, the bus is more safer compared to other vehicles, since it will not roll over as easily and has a strong chassis, so the people inside won't get trapped inside. In case of an accident, it is common to hit yourself and gain minor injuries, due to the lack of safety belts in many bus-companies.
+				</p>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>The downside is that you can't really affect the risks you take, since you are not driving the vehicle while traveling by bus. The best thing to do would be choosing a bus-company, that supports seat belts, so that you would have protection in case of a crash.
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>When traveling over 50 kilometers, you should have a travel insurance at all times, in case of illness or accidents. It might also be possible that the bus company has some insurance and in crashes that either of the vehicles' insurance covers your loss. 
+				</p>
+			</div>
+			<div class="Train">
+				<h2>Train
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>Public transport is the safest way to get around and train might be the safest way of traveling by land. For the passenger, it is a safe way to travel, while accidents with cars and pedestrians on railroad crossings are the risks that need the attention of the rain companies. The accidents that get the attention of the media are the trains falling off tracks, something that happens rarely. In a country that knows some terrorism, trains are of course attractive targets, so you should keep that in mind. In other words, when traveling on a 400 ton steel train, you can feel relatively safe wherever you do it. 
+				</p>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>The downside is that you can't really affect the risks you take, since you are not in charge when traveling on a train. What you can do is avoid areas that are known for terrorism, although the risk of a terrorist attack is very small. 
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>When traveling over 50 kilometers, you should have a travel insurance at all times, in case of illness or accidents. It might also be possible that the train company has some insurance to cover the injuries, if the accident is caused by them. 
+				</p>
+			</div>
+			<div class="Car">
+				<h2>Car
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>Everyone knows that there are risks in traveling by car and it is great that car safety is improving all the time. However, the dangers can never be removed entirely. Cars are the most lethal machines in the world. Hitting other cars or animals, railroad crossings, driving off the road, roll-overs and catching fire are some of the accidents that happen. The risks grow when the travel speed grows, conditions worsen and lighting gets darker.
+				</p>
+				<div class="car-graph graph">
+				</div>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>First and foremost, you should obey all rules set, since many of the accidents happen because of reckless driving or driving under influence. 55 percent are single-vehicle accidents, most commonly roll-overs, hitting animals or debris, catching fire and driving off the road. How you can affect the effects of other drivers is through your own car choice. It is scientifically proven that the bigger and safer car you have, the smaller are the injuries on your health in a car accident, then again the bigger cars tend to roll-over more easily and are less safe in single-car accidents. Also you should check that your car is in shape and fits the driving conditions. The bad thing about owning a car is that it might be stolen.
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>In Finland, all registered vehicles have to be insured with a basic insurance. This insurance covers most of the injuries and damage to vehicles other than your own. That is why you should also think about a greater insurance for other accidents, so that you are covered in single car accidents as well. 
+				</p>
+			</div>
+			<div class="Walking">
+				<h2>Walking
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>Walking is the most natural way of going from one place to the other, but since it is a slow way of transport, the trip will take longer. As the time travelled is longer, there is more time for accidents to happen. The most common accidents are falling on a slippery surface and getting hit by a car or a bicycle. For example falling and injuring yourself is something that happens for almost 30 percent of all Finns yearly, although not all of these accidents require healthcare. Getting hit by a car is a real big risk, since the severity of injuries gained from hitting a vehicle might often be fatal.
+				</p>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>Most of the injuries falling happen during the wintertime, when it's slippery all around. That is why you should pay greater attention on your attire and be aware of the chances you might fall. You can also learn how to fall the right way by gaining better body coordination through some martial arts, for example judo. Most people get hit by car because of reckless driving, so the best way to evade the risky situations is not to trust all cars go by the rules. This is why road safety should be taught to kids in an early age. 
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>Most of the injuries happen while going to work. Most of these injuries can be treated through the insurance on accidents to employees, which is mandatory in Finland. If a car hits a pedestrian or a bike, it can be dealt through the basic car insurance which is also mandatory for all registered vehicles in Finland. However, you should consider having an insurance on accidents happening on your free time, certainly an insurance for your kids and also a life insurance in case of casualties, because the mandatory insurances might not cover these fully.
+				</p>
+			</div>
+			<div class="Airplane">
+				<h2>Airplane
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>Although many people are afraid of flying, it happens to be a very safe way of traveling, especially long distances. The risks in flying are in fact during take-off, landing and operating on the airstrip. That is why it really doesn't matter how far you're going, since the risk doesn't increase significantly during the flight. The most common risks are hitting another plane, motor dysfunction and false landing. Terrorism is an improbable event on your flight. 
+				</p>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>These are once again risks you can't affect. You should choose a big company that is known for its reliability if you want to play it safe. Ways to spot a reliable company are having a Category 1 ranking from the US Aviation Administration or being a member of a major airline alliance. You might want to avoid airlines banned by the EU as well. You should not fly when having a disease, in case you get a 
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>These are risks that are covered by the insurance of the flight company. They have a strict liability of their own actions and are responsible for the results. However your travel insurance gives you cover on illness on the trip and life insurance in case of death.
+				</p>
+			</div>
+			<div class="Bicycle">
+				<h2>Bicycle
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>While riding a bike, you travel at high speed with little cover on you. Any hit with a car, bus, another bicycle or a pedestrian will send you flying through the air hitting the ground with a brute force. Considered that you often travel on streets made of concrete, it is a real risk even in lesser speeds. One thing is, your bicycle might not be in appropriate shape and the dysfunction of your bicycle might result in an accident, even if you would drive in a safe way. The risks are on your health, as well as on the bike.
+				</p>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>The most important thing is to use a helmet, no matter how stupid it would look. This is because you often land on the ground in a high speed and almost every time hit your head in some way. When bicycling without a helmet, you are the perfect candidate for becoming an organ donor, since the probability of becoming brain dead while other organs survive is far greater than in any other way of transportation. That means that helmet is a life insurance for you. Another thing is to have your bicycle checked every once and a while, so that it is safe to pedal. Also you should control your speed in traffic and beware of crossings while riding a bicycle. In 87 percent of the accidents where a car hits a bike, the driver of the car is the cause of the accident.
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>Accidents happened on your way to work can be treated through the insurance on accidents to employees, which is mandatory in Finland. If a car hits your bike, it can be dealt through the basic car insurance which is also mandatory for all registered vehicles in Finland. However, you should consider having an insurance on accidents happening on your free time, certainly an insurance for your kids and also a life insurance in case of casualties, because the mandatory insurances might not cover these fully. Your home insurance often covers the damage on your bike.
+				</p>
+			</div>
+			<div class="Motorcycle">
+				<h2>Motorcycle
+				</h2>
+				<h3>What are the risks?
+				</h3>
+				<p>Risks here are pretty much the same as in driving a car. The main difference is, while traveling at the same speeds, the protection covered is a lot less compared to a car. In two-vehicle collisions the motorcyclist fatalities are 70 times more probable compared with drivers of other vehicles. Motorcycle safety is often is often rationalized with the better handling of the vehicle, thus giving a greater ability to juke crashes. While true, it doesn’t reduce the severity of the accidents.
+				</p>
+				<h3>How can you diminish the risk?
+				</h3>
+				<p>Many motorcycle accidents can be prevented with good driving skill, obeying the speed limits and paying attention to all driving conditions. In case of a crash, the helmet and driving outfit wore will give you protection and should be wore at all times.
+				</p>
+				<h3>What about insurance?
+				</h3>
+				<p>In Finland, all registered vehicles have to be insured with a basic insurance. This insurance covers most of the injuries and damage to vehicles other than your own. That is why you should also think about a greater insurance for other accidents, so that you are covered in single vehicle accidents as well. 
+				</p>
+			</div>
+		</div>
+
+		<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/d3-bar-chart.js" />
+		<script type="text/javascript" src="#{facesContext.externalContext.requestContextPath}/js/rp-map-dots.js" />
+		
+		<script type="text/javascript">
+			function drawCarGraph(){
+				var dataCars = [{"category":"Others", "chance":"0.39", "desc":"Average Cost: 2500€ - 50000€.<br/>Insurance Cost: 300€/year"},
+							{"category":"Rear-end", "chance":"0.17", "desc":"Average Cost: 3000€ - 10000€.<br/>Insurance Cost: 200€/year"},
+							{"category":"Swerve off", "chance":"0.16", "desc":"Average Cost: 900€ - 3200€.<br/>Insurance Cost: 300€/year"},
+							{"category":"Crossings", "chance":"0.14", "desc":"Average Cost: 5000€ - 8000€.<br/>Insurance Cost: 450€/year"},
+							{"category":"Bicycles and pedestrians", "chance":"0.09", "desc":"Average Cost: 3500€ - 40000€.<br/>Insurance Cost: 100€/year"},
+							{"category":"Head-to-head", "chance":"0.04", "desc":"Average Cost: 8000€ - 30000€.<br/>Insurance Cost: 200€/year"},
+							{"category":"Reverse", "chance":"0.01", "desc":"Average Cost: 400€ - 6000€.<br/>Insurance Cost: 170€/year"}];
+				var optionsMap = {
+						barHeight : 20,
+						maxBarWidth : 0.38,
+						colorsScale : d3.scale.category20c(),
+						barLabelWidth : 160
+						}
+				$( drawBarChart(dataCars, "chance", '.car-graph', optionsMap) );
+			}
+
+			$.urlParam = function(name){
+			    var results = new RegExp('[\\?&amp;]' + name + '=([^&amp;#]*)').exec(window.location.href);
+			    return results[1] || 0;
+			}
+			
+			var dataTransport;
+			if($.urlParam('type') == 'daily') {
+				$('#vis-title span').text('daily commute');
+				dataTransport = [{"category":"Bus", "byjourney": 4.3, "bykm":0.05, "byhour":11.1 ,"desc":"One of the safest ways to travel to work/school. Professional drivers and big vehicles makes a difference in daily commute."},
+				        {"category":"Train", "byjourney":20, "bykm": 0.4, "byhour":30 ,"desc":"A relatively safe way to transport huge masses of people in the city. Accidents happen rarely, but when occurred the consequences are severe."},
+				        {"category":"Car", "byjourney":40, "bykm":1.2, "byhour":130 ,"desc":"The most popular way of transportation for most people. The popularity on roads and misuse results in dangerous situations in high speeds."},
+				        {"category":"Walking", "byjourney":40, "bykm":2.6, "byhour":220 ,"desc":"While a healthy way to travel small distances, it is one of the riskiest way since it is also the slowest."},
+				        {"category":"Bicycle", "byjourney":170, "bykm":54.2, "byhour":550 ,"desc":"Fast way to move without interfering the traffic, yet dangerous thanks to the combination of speed and the lack of protection."},
+				        {"category":"Motorcycle", "byjourney":1640, "bykm":108.9, "byhour":4840 ,"desc":"In many ways the most dangerous way of transportation. High speeds and lesser cover compared to cars equals more accidents."}];
+			} else {
+				$('#vis-title span').text('traveling');
+				dataTransport = [{"category":"Bus", "byjourney": 4.3, "bykm":0.05, "byhour":11.1 ,"desc":"One of the safest ways to travel to work/school. Professional drivers and big vehicles makes a difference in daily commute."},
+				        {"category":"Train", "byjourney":20, "bykm": 0.4, "byhour":30 ,"desc":"A relatively safe way to transport huge masses of people in the city. Accidents happen rarely, but when occurred the consequences are severe."},
+				        {"category":"Car", "byjourney":40, "bykm":1.2, "byhour":130 ,"desc":"The most popular way of transportation for most people. The popularity on roads and misuse results in dangerous situations in high speeds."},
+				        {"category":"Airplane", "byjourney":117, "bykm":44.6, "byhour":30.8 ,"desc":"Safest way of travelling long distances. The picture given in media and in people´s minds is often exaggerated."},
+				        {"category":"Motorcycle", "byjourney":1640, "bykm":108.9, "byhour":4840 ,"desc":"In many ways the most dangerous way of transportation. High speeds and lesser cover compared to cars equals more accidents."}];
+			}
+			var kmExplanation = "<strong>By Km</strong><br/>Shows you the risk taken on the distance travelled. Better for evaluating single trips. Graph shows the number of fatalities per billion kilometers."
+			var journeyExplanation = "<strong>By Journey</strong><br/>Shows you the risk taken per journey, no matter the distance. Better for evaluating daily trips. Graph shows the number of fatalities per billion journeys."
+			var hourExplanation = "<strong>By Hour</strong><br/>Will be removed. Just for tests."
+				
+
+			var optionsVis = {
+					barHeight : 30,
+					maxBarWidth : 0.58,
+					colorsScale : d3.scale.category10(),
+					barLabelWidth : 80
+					}
+			$( drawBarChart(dataTransport, "bykm", '#vis', optionsVis) );
+			d3.select('#vis').append('p').html(kmExplanation).classed("explanation" , true);
+			d3.select('#vis').append('div').attr('id','map');
+			drawMap();
+
+		</script>
+		
+	
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog id="about" header="About"
+			styleClass="unselectable" width="600"
+			closeOnEscape="true" widgetVar="about" resizable="false">
+					<h:outputText
+						value="This visualization uses data and information from the following websites:" />
+				<ul>
+					<li>
+						<a target="_blank"
+						href="http://edition.cnn.com/2012/06/04/travel/airline-safety-rankings-consumer-tips">
+						<h:outputText
+							value="http://edition.cnn.com/2012/06/04/travel/airline-safety-rankings-consumer-tips" />
+						</a>
+					</li>
+					<li>
+						<a target="_blank"
+						href="http://journalistsresource.org/studies/environment/transportation/comparing-fatality-risks-united-states-transportation-across-modes-time">
+						<h:outputText
+							value="http://journalistsresource.org/studies/environment/transportation/comparing-fatality-risks-united-states-transportation-across-modes-time" />
+						</a>
+					</li>
+				</ul>
+			<h:form>
+				<p:commandButton value="OK" type="button"
+					styleClass="ui-confirmdialog-yes" icon="ui-icon-check"
+					onclick="about.hide();" />
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

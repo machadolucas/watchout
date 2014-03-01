@@ -1,0 +1,266 @@
+/* Welcome to Compass.
+ * In this file you should write your main styles. (or centralize your imports)
+ * Import this file using the following HTML or equivalent:
+ * <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css" /> */
+
+@import "compass";
+@import "index";
+@import "game";
+@import "end";
+@import "animate";
+
+@import
+	url(http://fonts.googleapis.com/css?family=Montserrat:400,700);
+@import
+	url(http://fonts.googleapis.com/css?family=Bangers);
+::-moz-selection {
+	background: rgba(0,0,0,0.8);
+	color: #efefff;
+}
+
+::selection {
+	background: rgba(0,0,0,0.8);
+	color: #efefff;
+}
+
+.unselectable {
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-moz-user-select: -moz-none;
+	-khtml-user-select: none;
+	user-select: none;
+	cursor: default;
+}
+
+/* HTML overrides ================================================= */
+
+html, body {
+	height: 100%;
+}
+html {
+	width: 100%;
+	-webkit-font-smoothing: antialiased;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	color: #333;
+	overflow-x: scroll;
+	
+	background: #dfd url(../static/img/square_bg.png) right repeat;
+}
+.start-content {
+	min-height: 100%;
+	height: auto !important;
+	margin: auto;
+	font-size: 0px;
+	width:900px;
+}
+footer {
+	height: 50px;
+	width: 90%;
+	background: rgba(40,40,40,0.8);
+	text-align: center;
+	color: #bababa;
+	line-height: 50px;
+	padding: 0px 5%;
+	font-size: 13px;
+	
+	a {
+		color: #bababa;
+		padding: 0px 1em;
+	}
+	a:hover {
+		color: white;
+	}
+}
+
+body, .ui-widget{
+	font-family: 'Montserrat', sans-serif;
+	font-weight: 300;
+}
+
+.flexContainer {
+	display: -webkit-flex;
+	display: flex;
+}
+.flexContainerVertical {
+	display: -webkit-flex;
+	display: flex;
+	-webkit-box-orient: vertical;
+   -moz-box-orient: vertical;
+   -ms-flex-direction: column;
+	-webkit-flex-direction: column;
+   flex-direction: column;
+}
+.flexItem{
+	-webkit-flex: 1;
+	flex: 1;
+}
+.flexWrap {
+	-webkit-flex-wrap: wrap;
+	flex-wrap: wrap;
+}
+
+#ajaxLoader {
+}
+#ajaxLoader .overlay {
+	position: fixed;
+	top:0px;
+	left:0px;
+	bottom: 0px;
+	right: 0px;
+	background: rgba(0,0,0,0.2);
+	display: none;
+	z-index: 99999;
+}
+#ajaxLoader .indicator {
+	position: fixed;
+	bottom: 0px;
+	left: 45%;
+	background: rgba(0,0,0,0.8);
+	border-radius: 15px 15px 0px 0px;
+	padding: 10px 20px 5px 20px;
+	border-top: 2px solid rgba(255,255,255,0.6);
+	border-left: 2px solid rgba(255,255,255,0.6);
+	border-right: 2px solid rgba(255,255,255,0.6);
+	display: none;
+	z-index: 99999;
+}
+.ui-dialog {
+	font-size: 80%;	
+}
+
+h1 {
+	font-size: 96px;
+}
+
+h2 {
+	font-size: 36px;
+}
+
+h3 {
+	font-size: 26px;
+}
+
+h4 {
+	font-size: 24px;
+}
+
+h5 {
+	font-size: 22px;
+}
+
+h6 {
+	font-size: 20px;
+}
+
+p {
+	font-size: 18px;
+}
+
+/* Primefaces overrides ================================================= */
+
+.ui-inputfield {
+	width: 100%;
+}
+.ui-tooltip {
+	font-size: 0.8em;
+	background: #fafafa !important;
+}
+.ui-panelgrid.ui-widget tbody tr,.ui-panelgrid.ui-widget tbody tr td {
+	border: none;
+}
+
+.ui-widget-content {
+	background: none;
+}
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default{
+	font-weight: normal !important;
+}
+.ui-widget-content.ui-datascroller-content {
+	background: rgba(0,0,0,0.1);
+	border: none;
+}
+.ui-growl-title{
+	font-family: 'Bangers', cursive;
+	font-size: 24px;
+	font-weight: normal;
+}
+.ui-message{
+	font-size: 0.8em !important;
+}
+.accordion-body{
+	background: rgba(255,255,255,0.3);
+}
+.accordion-tab{
+	background: rgba(52,149,253,0.6);
+	color: #ffffff;
+	text-shadow: 2px 2px #222;
+	border-radius: 0px;
+	font-family: 'Bangers', cursive;
+	font-size: 36px;
+	padding: 0.2em 1.5em 0.2em 1.5em !important;
+	margin: 0px 0px 1px 0px !important;
+}
+.accordion-tab.ui-state-active{
+	background: rgba(42,139,243,1);
+	color: #ffffff;
+	text-shadow: 2px 2px #000;
+}
+.accordion-tab.ui-state-hover{
+	background: rgba(52,149,253,0.8);
+	color: #ffffff;
+	text-shadow: 2px 2px #000;
+}
+
+.ui-dialog {
+	border-radius: 0px;
+	border: none;
+	.ui-dialog-content, .ui-dialog-buttonpane {
+		background: #efe url(../static/img/square_bg.png) right repeat;
+		border-radius: 0px;
+		padding: 1em 2em 2em 1.5em;
+		min-height: 100%;
+	}
+	.ui-dialog-buttonpane {
+		margin: 0px;
+		padding: 10px;
+		
+		button {
+			margin: 3px 20px 0px 0px !important;
+		}
+	}
+	.ui-dialog-titlebar {
+		background: rgba(42,139,243,1);
+		padding: .1em;
+		border-radius: 0px;
+		-webkit-user-select: none;
+		-moz-user-select: none;
+		-moz-user-select: -moz-none;
+		-khtml-user-select: none;
+		user-select: none;
+		
+		.ui-dialog-title{
+			color: #ffffff;
+			text-shadow: 2px 2px #000;
+			font-family: 'Bangers', cursive;
+			font-size: 36px;
+			margin: 0px !important;
+			padding: .2em .7em;
+		}
+	}
+}
+.ui-dialog-titlebar-close {
+	padding: 15px !important;
+	margin: 0px !important;
+	border-radius: 0px;
+}
+.ui-dialog-titlebar-close.ui-state-hover {
+	background: #fff;
+	border: none;
+}
+.ui-widget-overlay {
+	background: black;
+}

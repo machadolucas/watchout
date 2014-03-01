@@ -1,0 +1,117 @@
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/template.xhtml">
+
+	<ui:define name="head">
+		<title>Watch out!</title>
+
+	</ui:define>
+
+	<ui:define name="content">
+
+		<p:growl autoUpdate="true" showDetail="true" sticky="true" id="growl"
+			globalOnly="true" />
+
+		<p:outputPanel styleClass="flexContainer">
+			<p:outputPanel styleClass="flexItem">
+			</p:outputPanel>
+			
+			<p:outputPanel styleClass="flexContainerVertical">
+				
+				<p:graphicImage url="static/img/banner.png" />
+				<p:outputPanel styleClass="blockBackground">
+				
+				<h2>You won!</h2>
+				
+				<p:outputPanel styleClass="flexContainerVertical questSummary">
+					<p:outputPanel styleClass="title">
+						<h:outputText value="#{playerSessionBean.activeQuest.name} - Quest Completed!"/>
+					</p:outputPanel>
+					<p:outputPanel styleClass="flexContainer flexItem">
+						<p:outputPanel styleClass="flexContainerVertical">
+							<p:outputPanel styleClass="flexItem place">
+								<h:outputText value="Origin: #{playerSessionBean.activeQuest.placesByOrigin.name}"/>
+							</p:outputPanel>
+							<p:outputPanel styleClass="flexItem place">
+								<h:outputText value="Objective: #{playerSessionBean.activeQuest.placesByDestination.name}"/>
+							</p:outputPanel>
+						</p:outputPanel>
+						<p:outputPanel styleClass="flexContainerVertical flexItem description">
+							<h:outputText value="#{playerSessionBean.activeQuest.description}"/>
+						</p:outputPanel>
+					</p:outputPanel>
+				</p:outputPanel>
+
+				<h3>Check how was your trip:</h3>
+				
+				</p:outputPanel>
+				<p:accordionPanel styleClass="accordion-body resultsAccordion" value="#{playerSessionBean.turnsHistory}" var="step" >
+					<p:tab title="From #{step.placesHasTransports.places.name} to #{step.placesHasTransports.destination.name}"
+						titleStyleClass="accordion-tab">
+						<p:outputPanel styleClass="stepResume">
+							<p><h:outputText value="Transportation: #{step.placesHasTransports.transports.name}"/></p>
+							<p><h:outputText value="Cost: #{step.placesHasTransports.moneyCost}"/></p>
+						</p:outputPanel>
+						<h5><h:outputText value="Risks that happened" rendered="#{not empty step.turnsHistoryHasPlacesriskses.toArray() or not empty step.turnsHistoryHasTransportationriskses.toArray()}"/></h5>
+						<ul>
+						<ui:repeat var="risk" value="#{step.turnsHistoryHasPlacesriskses.toArray()}">
+							<li>
+								<p><h:outputText id="riskName" value="#{risk.placesrisks.name}" styleClass="overlayLabel" /></p>
+								<p><h:outputText value="Costed " /><i class="fa fa-money"></i>
+									<h:outputText value=" #{risk.placesrisks.cashCost}. Consumed " /><i class="fa fa-sun-o"></i>
+									<h:outputText value=" #{risk.placesrisks.energyCost}." /></p>
+								<p:overlayPanel for="riskName" showEffect="fade" hideEffect="fade" showEvent="mouseover"
+									hideEvent="mouseout">
+									<h4><h:outputText value="#{risk.placesrisks.name} (#{risk.placesrisks.places.name})" /></h4>
+									<p class="description"><h:outputText value="#{risk.placesrisks.description}" /></p>
+									<p>
+										<h:outputText value="Risk cost: " /><i class="fa fa-money"></i>
+										<h:outputText value=" #{risk.placesrisks.cashCost}" /><br/>
+										<h:outputText value="Energy cost: " /><i class="fa fa-sun-o"></i>
+										<h:outputText value=" #{risk.placesrisks.energyCost}" /><br/>
+										<b><h:outputText value="Probability: #{risk.placesrisks.frequency}" /></b>
+									</p>
+								</p:overlayPanel>
+							</li>
+						</ui:repeat>
+						<ui:repeat var="risk" value="#{step.turnsHistoryHasTransportationriskses.toArray()}">
+							<li>
+								<p><h:outputText id="riskName" value="#{risk.transportationrisks.name}" styleClass="overlayLabel" /></p>
+								<p><h:outputText value="Costed " /><i class="fa fa-money"></i>
+									<h:outputText value=" #{risk.transportationrisks.cashCost}. Consumed " /><i class="fa fa-sun-o"></i>
+									<h:outputText value=" #{risk.transportationrisks.energyCost}." /></p>
+								<p:overlayPanel for="riskName" showEffect="fade" hideEffect="fade" showEvent="mouseover"
+									hideEvent="mouseout">
+									<h4><h:outputText value="#{risk.transportationrisks.name} (#{risk.transportationrisks.transports.name})" /></h4>
+									<p class="description"><h:outputText value="#{risk.transportationrisks.description}" /></p>
+									<p>
+										<h:outputText value="Risk cost: " /><i class="fa fa-money"></i>
+										<h:outputText value=" #{risk.transportationrisks.cashCost}" /><br/>
+										<h:outputText value="Energy cost: " /><i class="fa fa-sun-o"></i>
+										<h:outputText value=" #{risk.transportationrisks.energyCost}" /><br/>
+										<b><h:outputText value="Probability: #{risk.transportationrisks.frequency}" /></b>
+									</p>
+								</p:overlayPanel>
+							</li>
+						</ui:repeat>
+						</ul>
+					</p:tab>
+				</p:accordionPanel>
+				
+				<h:form>
+					<p:commandButton action="#{playerSessionBean.endQuest}"
+						value="Back to home page" styleClass="button list blue flexItem"/>
+				</h:form>
+			</p:outputPanel>
+			
+			<p:outputPanel styleClass="flexItem">
+			</p:outputPanel>
+		</p:outputPanel>
+		
+	</ui:define>
+
+</ui:composition>

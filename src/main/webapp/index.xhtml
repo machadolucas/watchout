@@ -1,0 +1,595 @@
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui" template="/template.xhtml">
+
+	<ui:define name="head">
+		<f:metadata>
+			<f:viewAction action="#{playerSessionBean.isSessionActive}" />
+		</f:metadata>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<p:growl autoUpdate="true" showDetail="true" sticky="true" id="growl"
+			globalOnly="true" />
+		<p:outputPanel styleClass="start-content">
+
+			<p:graphicImage url="static/img/banner.png" />
+			<p:accordionPanel styleClass="accordion-body" widgetVar="accordion" id="accordion"
+				style="font-size: 18px;">
+
+				<p:tab title="The game" titleStyleClass="accordion-tab">
+					<iframe width="824" height="463"
+						src="http://www.youtube.com/embed/2R9ToUP1ANA?rel=0"
+						frameborder="0" allowfullscreen="" style="margin: auto"></iframe>
+					<p>In this game, you will learn more about risks</p>
+					<p>Click in Register below to create a player account and save
+						your achievements and statuses!</p>
+				</p:tab>
+
+				<p:tab title="Register (optional)" titleStyleClass="accordion-tab">
+					<p:outputPanel autoUpdate="true">
+						<p:outputPanel
+							rendered="#{not empty playerSessionBean.player.idplayers}">
+							<p>
+								You are currently logged as
+								<h:outputText value="#{playerSessionBean.player.name}" />
+								(
+								<h:outputText value="#{playerSessionBean.player.email}" />
+								).
+							</p>
+							<p>Log out to register or sign in as another player.</p>
+							<h:form>
+								<p:commandButton value="Log out"
+									actionListener="#{playerSessionBean.logout()}"
+									styleClass="button red" update=":accordion:accountForm:registerDiv" />
+							</h:form>
+						</p:outputPanel>
+					</p:outputPanel>
+
+					<h:form id="accountForm">
+						<p:outputPanel id="registerDiv">
+							<p:outputPanel
+								rendered="#{empty playerSessionBean.player.idplayers}">
+								<p>You can register if you want to save your achievements
+									and scores!</p>
+								<p>If you already have an account, please login.</p>
+
+								<p:panelGrid>
+									<p:row>
+										<p:column>
+											<p:fieldset legend="Login" styleClass="fieldset-body">
+												<p:fragment autoUpdate="true">
+													<p:panelGrid id="loginPanel">
+														<p:row>
+															<p:column styleClass="inputColumn">
+																<h:outputText value="* " styleClass="requiredSymbol"
+																	title="This field is required" />
+																<h:outputLabel value="E-mail" for="loginemail" />
+																<p:inputText id="loginemail" type="email"
+																	value="#{playerSessionBean.loginEmail}" required="true"
+																	requiredMessage="#{msg.required_field_message}" />
+																<p:tooltip for="loginemail"
+																	value="Write the e-mail you used when registered" />
+															</p:column>
+															<p:column styleClass="messagesColumn">
+																<p:message for="loginemail" />
+															</p:column>
+														</p:row>
+														<p:row>
+															<p:column styleClass="inputColumn">
+																<h:outputText value="* " styleClass="requiredSymbol"
+																	title="This field is required" />
+																<h:outputLabel value="Password" for="loginpassword" />
+																<p:password id="loginpassword"
+																	value="#{playerSessionBean.loginPassword}"
+																	required="true"
+																	requiredMessage="#{msg.required_field_message}" />
+																<p:tooltip for="loginpassword"
+																	value="Your registered password (Case sensitive)" />
+															</p:column>
+															<p:column styleClass="messagesColumn">
+																<p:message for="loginpassword" />
+															</p:column>
+														</p:row>
+														<p:row>
+															<p:column colspan="2" style="text-align: center">
+																<p:commandButton value="Sign in" styleClass="button"
+																	process="loginPanel"
+																	actionListener="#{playerSessionBean.loginPlayer}"
+																	update="registerDiv" />
+															</p:column>
+														</p:row>
+													</p:panelGrid>
+												</p:fragment>
+											</p:fieldset>
+										</p:column>
+										<p:column>
+											<p:fieldset legend="New Account" styleClass="fieldset-body">
+												<p:panelGrid id="registerPanel">
+													<p:row>
+														<p:column styleClass="inputColumn">
+															<h:outputText value="* " styleClass="requiredSymbol"
+																title="This field is required" />
+															<h:outputLabel value="Player name" for="name" />
+															<p:inputText id="name" autocomplete="false"
+																value="#{playerSessionBean.newUsername}" required="true"
+																requiredMessage="#{msg.required_field_message}">
+																<p:ajax process="name" partialSubmit="true"
+																	immediate="true" event="keyup" update="usernameMessage" />
+																<f:validator binding="#{usernameValidator}" />
+															</p:inputText>
+															<p:tooltip for="name" value="Choose a unique username" />
+														</p:column>
+														<p:column styleClass="messagesColumn">
+															<p:message for="name" id="usernameMessage" />
+														</p:column>
+													</p:row>
+													<p:row>
+														<p:column styleClass="inputColumn">
+															<h:outputText value="* " styleClass="requiredSymbol"
+																title="This field is required" />
+															<h:outputLabel value="E-mail" for="email" />
+															<p:inputText id="email" autocomplete="false" type="email"
+																value="#{playerSessionBean.newUserEmail}"
+																required="true"
+																requiredMessage="#{msg.required_field_message}">
+																<p:ajax update="emailMessage" event="keyup"
+																	process="email" immediate="true" partialSubmit="true" />
+																<f:validator binding="#{playerEmailValidator}" />
+															</p:inputText>
+															<p:tooltip for="email"
+																value="Your e-mail will be used to login. We promise to not send any spam!" />
+														</p:column>
+														<p:column styleClass="messagesColumn">
+															<p:message for="email" id="emailMessage" />
+														</p:column>
+													</p:row>
+													<p:row>
+														<p:column styleClass="inputColumn">
+															<h:outputText value="* " styleClass="requiredSymbol"
+																title="This field is required" />
+															<h:outputLabel value="Password" for="password" />
+															<p:password id="password" autocomplete="false"
+																value="#{playerSessionBean.newPassword}" required="true"
+																match="passwordconf" feedback="true" inline="true"
+																requiredMessage="#{msg.required_field_message}" />
+															<p:tooltip for="password"
+																value="Choose a new password to your account" />
+														</p:column>
+														<p:column styleClass="messagesColumn">
+															<p:message for="password" />
+														</p:column>
+													</p:row>
+													<p:row>
+														<p:column styleClass="inputColumn">
+															<h:outputText value="* " styleClass="requiredSymbol"
+																title="This field is required" />
+															<h:outputLabel value="Confirmation" for="passwordconf" />
+															<p:password id="passwordconf" autocomplete="false"
+																value="#{playerSessionBean.newPassword}" required="true"
+																requiredMessage="#{msg.required_field_message}" />
+															<p:tooltip for="passwordconf"
+																value="Please type your new password again" />
+														</p:column>
+														<p:column styleClass="messagesColumn">
+															<p:message for="passwordconf" />
+														</p:column>
+													</p:row>
+													<p:row>
+														<p:column colspan="2" style="text-align: center">
+															<p:commandButton value="Sign up" process="registerPanel"
+																actionListener="#{playerSessionBean.registerNewPlayer}"
+																styleClass="button" update="registerDiv" />
+														</p:column>
+													</p:row>
+												</p:panelGrid>
+											</p:fieldset>
+										</p:column>
+									</p:row>
+								</p:panelGrid>
+
+								<br />
+								<p>You can also skip this step and play (Note that your
+									progress will not be saved).</p>
+							</p:outputPanel>
+						</p:outputPanel>
+					</h:form>
+				</p:tab>
+
+				<p:tab title="Play" titleStyleClass="accordion-tab">
+					<p:outputPanel autoUpdate="true">
+						<p:outputPanel
+							rendered="#{empty playerSessionBean.player.idplayers}">
+							<p>
+								<i class="fa fa-exclamation-triangle"></i><strong> You are not logged in <i class="fa fa-exclamation-triangle"></i></strong></p>
+								<p> If you want to save your progress, please
+								<p:commandLink onclick="PF('accordion').select(1)">log in or register</p:commandLink>
+								.
+							</p>
+						</p:outputPanel>
+						<p:outputPanel
+							rendered="#{not empty playerSessionBean.player.idplayers}">
+							<p>
+								<strong>You are currently logged as <h:outputText
+										value="#{playerSessionBean.player.name}" /> (<h:outputText
+										value="#{playerSessionBean.player.email}" />).
+								</strong>
+							</p>
+							<h:form>
+								<p:commandButton value="Log out"
+									actionListener="#{playerSessionBean.logout()}"
+									styleClass="button red" update=":accordion:accountForm:registerDiv"/>
+							</h:form>
+						</p:outputPanel>
+					</p:outputPanel>
+					<h:form>
+						<p>Choose a quest to start playing</p>
+						<p:outputPanel autoUpdate="true">
+							<p:dataScroller value="#{gameBean.quests}" var="quest"
+								chunkSize="10" mode="inline" scrollHeight="500">
+
+								<p:commandLink action="#{playerSessionBean.selectQuest(quest)}"
+									process="@this" update=":questDetail" 
+									oncomplete="PF('questDetail').show()">
+									<p:outputPanel styleClass="quest-block">
+										<h:outputText value="#{quest.name}" styleClass="quest-name" />
+										<h:outputText value="Destination #{quest.placesByDestination.name}"
+											styleClass="quest-destination" />
+										<h:outputText value="Click to see more details..."
+											styleClass="quest-description" />
+									</p:outputPanel>
+								</p:commandLink>
+
+							</p:dataScroller>
+						</p:outputPanel>
+					</h:form>
+
+				</p:tab>
+
+			</p:accordionPanel>
+		</p:outputPanel>
+
+		<footer>
+		Watch Out! This is dangerous - Demola Project. All rights reserved to its owners
+		<a href="admin/">Administrative Interface</a>
+		</footer>
+
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog id="questDetail" widgetVar="questDetail" modal="true"
+			resizable="false" closeOnEscape="true"
+			header="#{playerSessionBean.selectedQuest.name}">
+			<h:form id="questForm" styleClass="flexContainerVertical">
+				<div class="description">
+					<h:outputText value="#{playerSessionBean.selectedQuest.description}" />
+				</div>
+				<div class="flexContainer">
+					<div class="flexItem flexContainerVertical questDetailStatus">
+						<div class="flexContainerVertical">
+							<div class="label">
+								<i class="fa fa-star"></i>
+								Completion
+							</div>
+							<div class="value">
+								<h:outputText value="Uncompleted"
+								rendered="#{empty playerSessionBean.player.idplayers or empty playerSessionBean.selectedQuestRelation or not playerSessionBean.selectedQuestRelation.completed}"/>
+								<h:outputText value="Completed"
+								rendered="#{not empty playerSessionBean.player.idplayers and not empty playerSessionBean.selectedQuestRelation and playerSessionBean.selectedQuestRelation.completed}"/>
+							</div>
+						</div>
+						<div class="flexContainerVertical">
+							<div class="label">
+								<i class="fa fa-sun-o"></i>
+								Energy
+							</div>
+							<div class="value">
+								<h:outputText value="#{playerSessionBean.player.energy}"
+									rendered="#{empty playerSessionBean.player.idplayers or empty playerSessionBean.selectedQuestRelation}" />
+								<h:outputText value="#{playerSessionBean.selectedQuestRelation.energyAmount}"
+									rendered="#{not empty playerSessionBean.player.idplayers or empty playerSessionBean.selectedQuestRelation}" />
+							</div>
+						</div>
+						<div class="flexContainerVertical">
+							<div class="label">
+								<i class="fa fa-money"></i>
+								Cash
+							</div>
+							<div class="value">
+								<h:outputText value="#{playerSessionBean.player.cash}"
+									rendered="#{empty playerSessionBean.player.idplayers or empty playerSessionBean.selectedQuestRelation}">
+									<f:convertNumber pattern="#0.00" currencySymbol="€" type="currency" currencyCode="EUR" />
+								</h:outputText>
+								<h:outputText value="#{playerSessionBean.selectedQuestRelation.cashAmount}"
+									rendered="#{not empty playerSessionBean.player.idplayers or empty playerSessionBean.selectedQuestRelation}">
+									<f:convertNumber pattern="#0.00" currencySymbol="€" type="currency" currencyCode="EUR" />
+								</h:outputText>
+							</div>
+						</div>
+						<div class="flexContainerVertical">
+							<div class="label">
+								<i class="fa fa-home"></i>
+								Origin
+							</div>
+							<div class="value">
+								<h:outputText value=" #{playerSessionBean.selectedQuest.placesByOrigin.name}, #{playerSessionBean.selectedQuest.placesByOrigin.location}" />
+							</div>
+						</div>
+						<div class="flexContainerVertical">
+							<div class="label">
+								<i class="fa fa-user"></i>
+								Current Place
+							</div>
+							<div class="value">
+								<h:outputText value="#{playerSessionBean.selectedQuest.placesByOrigin.name}, #{playerSessionBean.selectedQuest.placesByOrigin.location}"
+								rendered="#{empty playerSessionBean.player.idplayers or empty playerSessionBean.selectedQuestRelation}"/>
+								<h:outputText value="#{playerSessionBean.selectedQuestRelation.places.name}, #{playerSessionBean.selectedQuestRelation.places.location}"
+								rendered="#{not empty playerSessionBean.player.idplayers and not empty playerSessionBean.selectedQuestRelation}"/>
+							</div>
+						</div>
+						<div class="flexContainerVertical">
+							<div class="label">
+								<i class="fa fa-map-marker"></i>
+								Destination
+							</div>
+							<div class="value">
+								<h:outputText value=" #{playerSessionBean.selectedQuest.placesByDestination.name}, #{playerSessionBean.selectedQuest.placesByDestination.location}" />
+							</div>
+						</div>
+					</div>
+					<div class="mapContainer">
+						<div class="mapCover"></div>
+						<p:gmap center="64.914665, 26.067255" zoom="4" type="TERRAIN" styleClass="mappreview_canvas"
+						 widgetVar="mappreview_canvas" streetView="false" disableDefaultUI="true" />
+					</div>
+					<p:outputPanel styleClass="flexContainerVertical questDetailInsurances"
+						rendered="#{empty playerSessionBean.selectedQuest or empty playerSessionBean.doesPlayerHasQuest(playerSessionBean.selectedQuest)}">
+					
+						<h3>Insurance coverages</h3>
+						<p>Buy the insurances you will need during your travel</p>
+						<p:pickList id="insurancePicklist" value="#{playerSessionBean.insurancesPicklist}" var="insurance"
+							itemValue="#{insurance}" itemLabel="#{insurance.name}" converter="pickListConverter"
+							showSourceFilter="false" showTargetFilter="false">
+						
+						   <f:facet name="sourceCaption">Available</f:facet>
+						   <f:facet name="targetCaption">Selected</f:facet>
+						
+						   <p:ajax event="transfer" listener="#{playerSessionBean.insuranceSelection}" update="totalInsuranceCost, playButton, warning" />
+						
+							<p:column style="width:75%;">
+								<h:outputText value="#{insurance.name}" />
+							</p:column>
+							
+							<p:column style="width:25%;">
+								<h:outputText value="#{insurance.cost}" />
+							</p:column>
+						</p:pickList>
+						<div class="flexContainer insurancesBottom">
+							<p>
+								<h:outputText value="Total price: " />
+								<h:outputText id="totalInsuranceCost" value="#{playerSessionBean.totalCostOfInsurances}" styleClass="price">
+									<f:convertNumber pattern="#0.00" currencySymbol="€" type="currency" currencyCode="EUR" />
+								</h:outputText>
+							</p>
+							<p:commandButton value="Learn more..." onclick="PF('insurancesDlg').show();"/>
+						</div>
+					</p:outputPanel>
+					
+					<p:outputPanel styleClass="flexContainerVertical savedQuestDetail"
+						rendered="#{not empty playerSessionBean.doesPlayerHasQuest(playerSessionBean.selectedQuest)}">
+						<p:outputPanel styleClass="flexItem flexContainerVertical" rendered="#{not playerSessionBean.selectedQuestRelation.completed}">
+							<p><h:outputText value="Your insurances:" /></p>
+							<p:outputPanel
+								styleClass="flexItem miniInsurancesPanel flexContainer flexWrap">
+								<ui:repeat var="questInsurance" value="#{playerSessionBean.doesPlayerHasQuest(playerSessionBean.selectedQuest).questInsuranceses.toArray()}">
+									<p:outputPanel styleClass="insuranceBlock">
+										<p:graphicImage value="#{gameBean.streamedInsuranceIcon}" title="#{questInsurance.insurances.name}">
+											<f:param name="id" value="#{questInsurance.insurances.idinsurances}" />
+										</p:graphicImage>
+									</p:outputPanel>
+								</ui:repeat>
+							</p:outputPanel>
+							<p:commandButton value="Learn more..." onclick="PF('insurancesDlg').show();"/>
+						</p:outputPanel>
+						<p:outputPanel styleClass="flexItem flexContainerVertical" rendered="#{playerSessionBean.selectedQuestRelation.completed}">
+							<p><h:outputText value="You have already completed this quest. You can see your statistics or delete your saved game to play again" /></p>
+							<p:commandButton value="See stats" styleClass="button blue" onclick="window.reload();"
+								action="#{playerSessionBean.startQuest}"/>
+						</p:outputPanel>
+						<p:outputPanel styleClass="flexItem flexContainerVertical">
+							<div class="flexItem"></div>
+							<p><h:outputText value="If you want, you can delete this saved game and start a new one:" /></p>
+							<p:commandButton value="Delete saved game" styleClass="button red"
+								onclick="PF('deleteQuestDialog').show()" />
+						</p:outputPanel>
+					</p:outputPanel>
+				</div>
+				
+				<div class="flexContainer popupbuttons">
+					<p:commandButton value="Cancel" styleClass="button red"
+						onclick="PF('questDetail').hide()" />
+					<p:commandButton id="playButton" value="Continue" styleClass="button" onclick="window.reload();"
+						action="#{playerSessionBean.startQuest}" disabled="#{playerSessionBean.totalCostOfInsurances > playerSessionBean.player.cash}"/>
+					<p:outputPanel id="warning">
+						<p class="warningText">
+							<h:outputText  value="You don't have enough money for that. Please review your insurance selection."
+								rendered="#{playerSessionBean.totalCostOfInsurances > playerSessionBean.player.cash}" />
+						</p>
+					</p:outputPanel>
+				</div>
+			</h:form>
+			
+			<script>
+			
+				var gmap = PF('mappreview_canvas').getMap();
+				gmap.set('styles', [
+		       {
+				    "featureType": "road",
+				    "stylers": [{ "visibility": "off" }]
+				  },{
+				    "featureType": "transit",
+				    "stylers": [{ "visibility": "off" }]
+				  },{
+				    "featureType": "administrative.locality",
+				    "elementType": "labels",
+				    "stylers": [{ "visibility": "off" }]
+				  },{
+				    "featureType": "water",
+				    "elementType": "labels",
+				    "stylers": [{ "visibility": "off" }]
+				  },{
+				    "featureType": "administrative.province",
+				    "stylers": [{ "visibility": "off" }]
+				  },{
+				    "elementType": "labels",
+				    "stylers": [{ "visibility": "off" }]
+				  }
+		     ]);
+				var bounds = new google.maps.LatLngBounds();
+				
+				var markerOrigin = new google.maps.Marker({
+				  position: new google.maps.LatLng(#{playerSessionBean.selectedQuest.placesByOrigin.mapCoordinates}),
+				  map: gmap,
+				  icon : 'http://maps.google.com/mapfiles/ms/icons/homegardenbusiness.png'
+				});
+				bounds.extend(new google.maps.LatLng(#{playerSessionBean.selectedQuest.placesByOrigin.mapCoordinates}));
+				
+				var isThereActualPosition = #{not empty playerSessionBean.player.idplayers and not empty playerSessionBean.selectedQuestRelation};
+				if (isThereActualPosition) {
+					var markerActualPosition = new google.maps.Marker({
+					  position: new google.maps.LatLng(#{playerSessionBean.selectedQuestRelation.places.mapCoordinates}),
+					  map: gmap,
+					  icon : 'http://maps.google.com/mapfiles/ms/micons/man.png'
+					});
+					bounds.extend(new google.maps.LatLng(#{playerSessionBean.selectedQuestRelation.places.mapCoordinates}));
+					
+				} else {
+					var markerActualPosition = new google.maps.Marker({
+					  position: new google.maps.LatLng(#{playerSessionBean.selectedQuest.placesByOrigin.mapCoordinates}),
+					  map: gmap,
+					  icon : 'http://maps.google.com/mapfiles/ms/micons/man.png'
+					});
+					bounds.extend(new google.maps.LatLng(#{playerSessionBean.selectedQuest.placesByOrigin.mapCoordinates}));
+				}
+				
+				var markerDestination = new google.maps.Marker({
+				  position: new google.maps.LatLng(#{playerSessionBean.selectedQuest.placesByDestination.mapCoordinates}),
+				  map: gmap,
+				  icon : 'http://maps.google.com/mapfiles/kml/pal3/icon28.png'
+				});
+				bounds.extend(new google.maps.LatLng(#{playerSessionBean.selectedQuest.placesByDestination.mapCoordinates}));
+				
+				//remember the property set by PrimeFaces
+				var tmp = gmap.fitBounds;
+				//replace the code by the one provided by google maps api
+				gmap.fitBounds = google.maps.Map.prototype.fitBounds;
+				gmap.fitBounds(bounds);
+				//restore PrimeFaces property (probably PrimeFaces use it somehow)
+				gmap.fitBounds = tmp;
+				
+			</script>
+		</p:dialog>
+		
+		<p:confirmDialog
+			header="#{msg.primefaces_confirmDialog_delete_header}"
+			message="Are you sure to delete this saved game? This can not be undone."
+			id="deleteQuestDialog" widgetVar="deleteQuestDialog">
+			<h:form>
+				<p:commandButton type="button" styleClass="button blue flexItem"
+					label="#{msg.global_generic_label_no}"
+					title="#{msg.command_cancel_alt}"
+					value="#{msg.global_generic_label_no}"
+					onclick="PF('deleteQuestDialog').hide();" />
+				<p:commandButton id="confirmDeleteButton" styleClass="button flexItem"
+					label="#{msg.global_generic_label_yes}"
+					title="#{msg.command_confirm_alt}"
+					value="#{msg.global_generic_label_yes}"
+					actionListener="#{playerSessionBean.deletePlayerHasQuest(playerSessionBean.selectedQuestRelation)}"
+					oncomplete="PF('deleteQuestDialog').hide();PF('questDetail').hide();" />
+			</h:form>
+		</p:confirmDialog>
+		
+		<p:dialog widgetVar="insurancesDlg" closable="true" modal="true" header="About insurances" resizable="false" draggable="false"
+			closeOnEscape="true" onHide="PF('insurancesDlg').toggleMaximize();" onShow="PF('insurancesDlg').toggleMaximize();" id="insurancesDlg" >
+			
+			<ui:repeat var="insurance" value="#{gameBean.insurances}">
+				<div class="flexContainerVertical insuranceInfo">
+					<div class="flexContainer">
+						<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+							<f:param name="id" value="#{insurance.idinsurances}" />
+						</p:graphicImage>
+						<h4 class="flexItem"><h:outputText value="#{insurance.name}"/></h4>
+						<h4><h:outputText value="Costs #{insurance.cost}"/></h4>
+					</div>
+					<div class="flexContainer">
+						<p class="description"><h:outputText value="#{insurance.description}"/></p>
+					</div>
+					<hr/>
+					<div class="flexContainer">
+						<ui:fragment rendered="#{not empty insurance.insurancesHasTransportationriskses.toArray()}">
+							<div class="flexItem risksBox">
+								<p class="tableHeader"><h:outputText value="This insurance covers the following transportation risks:"/></p>
+								<table>
+									<tr>
+										<th>
+											<h:outputText value="Risk"/>
+										</th>
+										<th>
+											<h:outputText value="Cover"/>
+										</th>
+									</tr>
+									
+									<ui:repeat var="trisk" value="#{insurance.insurancesHasTransportationriskses.toArray()}">
+										<tr>
+											<td>
+												<strong><h:outputText value="#{trisk.transportationrisks.name}" /></strong>
+												<h:outputText value=" - #{trisk.transportationrisks.description}" />
+											</td>
+											<td>
+												<h:outputText value="#{trisk.cover}" />
+											</td>
+										</tr>
+									</ui:repeat>
+								</table>
+							</div>
+						</ui:fragment>
+						<ui:fragment rendered="#{not empty insurance.insurancesHasPlacesriskses.toArray()}">
+							<div class="flexItem risksBox">
+								<p class="tableHeader"><h:outputText value="This insurance covers the following location risks:"/></p>
+								<table>
+									<tr>
+										<th>
+											<h:outputText value="Risk"/>
+										</th>
+										<th>
+											<h:outputText value="Cover"/>
+										</th>
+									</tr>
+									<ui:repeat var="prisk" value="#{insurance.insurancesHasPlacesriskses.toArray()}">
+										<tr>
+											<td>
+												<strong><h:outputText value="#{prisk.placesrisks.name}" /></strong>
+												<h:outputText value=" - #{prisk.placesrisks.description}" />
+											</td>
+											<td>
+												<h:outputText value="#{prisk.cover}" />
+											</td>
+										</tr>
+									</ui:repeat>
+								</table>
+							</div>
+						</ui:fragment>
+					</div>
+				</div>
+			</ui:repeat>
+		
+		</p:dialog>
+
+	</ui:define>
+
+</ui:composition>

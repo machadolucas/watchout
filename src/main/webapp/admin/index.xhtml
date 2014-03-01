@@ -1,0 +1,47 @@
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/admin/static/template.xhtml">
+
+	<ui:define name="breadcrumb">
+		<p:breadCrumb>
+			<p:menuitem value="#{msg.admin_menu_home}"
+				title="#{msg.admin_menu_home}" url="../index.jsf" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h2>
+			<h:outputText value="Welcome to the administrative interface." />
+		</h2>
+		<h4>
+			<h:outputText
+				value="You can manage data and mechanics with the items in the menu on the left." />
+		</h4>
+		<p:panel>
+			<p>
+				<h:outputText
+					value="As the entities have dependencies on each other, there's a natural order to add them as follows:" />
+			</p>
+			<ul>
+				<li><h:outputText value="Add Transports" /></li>
+				<li><h:outputText
+						value="Add Places and relations between them by using the Transports." />
+				</li>
+				<li><h:outputText value="Add Quests by using the Places" /></li>
+				<li><h:outputText value="Add Transportation and Places risks" />
+				</li>
+				<li><h:outputText
+						value="Add Insurances based on Transportation and Places risks" />
+				</li>
+			</ul>
+		</p:panel>
+
+
+	</ui:define>
+</ui:composition>

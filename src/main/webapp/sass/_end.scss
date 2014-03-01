@@ -1,0 +1,121 @@
+@import "compass";
+
+/* End game screen styles ================================================= */
+
+.blockBackground {
+	background: rgba(255,255,255,0.3);
+	border-top: 2px solid rgba(42,139,243,1);
+}
+
+.questSummary {
+	background: rgba(0,0,0,0.1);
+	padding: 0.5em;
+	margin: 0.5em;
+	border-radius: 5px;
+	box-shadow: inset 0px 0px 5px rgba(0,0,0,0.4);
+	
+	> div {
+		padding: 0.5em;
+		margin: 0.1em;
+		background: rgba(42,139,243,1);
+		color: white;
+		border-radius: 5px;
+		box-shadow: 0px 0px 2px rgba(0,0,0,0.8);
+	}
+	> div > div {
+		padding: 0.5em;
+		margin: 0.1em;
+		color: black;
+		background: rgba(255,255,255,0.9);
+	}
+	.title {
+		font-size: 24px;
+		font-weight: bold;
+		text-align: center;
+		text-shadow: 2px 2px 1px black;
+	}
+	.description {
+		font-size: 14px;
+		text-shadow: 1px 1px 1px white;
+		-webkit-justify-content: center;
+		justify-content: center;
+	}
+	.place {
+		padding: 0.5em 0.7em;
+		margin: 0.2em;
+		font-size: 17px;
+		text-align: right;
+		text-shadow: 1px 1px 1px white;
+	}
+}
+
+.resultsAccordion{
+	h5 {
+		margin: 0em;
+		font-size: 20px;
+		text-align: center;
+	}
+	p {
+		margin: 0em;
+		font-size: 15px;
+	}
+	.stepResume p {
+		font-size: 18px;
+	}
+	ul {
+		list-style: none;
+		padding: 0em 0.5em;
+		margin: 0.5em 0em;
+		
+		li {
+			margin: 0.2em 0em;
+			padding: 0.3em 0.5em;
+			background: rgba(0,0,0,0.1);
+			border-radius: 5px;
+			box-shadow: inset 0px 0px 5px rgba(0,0,0,0.4);
+			
+			> p > b {
+				color: #ffffbb;
+			}
+		}
+	}
+	.overlayLabel {
+		text-decoration: underline;
+		color: red;
+		font-weight: bold;
+	}
+	.ui-overlaypanel-content{
+		text-shadow: 0px 0px 5px white;
+		> h4 {
+			font-size: 20px;
+			margin: 0em 0em 0.3em 0em;
+		}
+		.flexContainer > h4 {
+			font-size: 20px;
+			line-height: 32px;
+			margin: 0em 0em 0.3em 0em;
+		}
+		b {
+			color: black;
+		}
+		.description {
+			margin: 0em 0em 1em 0em;
+		}
+		img {
+			border: 2px solid #666;
+			box-shadow: 1px 1px 4px rgba(0,0,0,0.5);
+			border-radius: 6px;
+			background: white;
+			max-width: 32px;
+			max-height: 32px;
+			margin-right: 15px;
+		}
+		table {
+			margin: 0px 15px;
+		}
+		td {
+			padding: 0.1em 0.7em;
+			background: #ddd;
+		}
+	}
+}

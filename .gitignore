@@ -4,3 +4,6 @@ target
 !.settings/.jsdtscope
 .project
 .classpath
+.vagrant/
+*.DS_Store
+*.scssc

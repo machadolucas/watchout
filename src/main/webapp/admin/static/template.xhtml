@@ -1,0 +1,116 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+<h:head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+	<title>Watch out! - Administrative interface</title>
+
+
+	<link rel="stylesheet" type="text/css"
+		href="#{facesContext.externalContext.requestContextPath}/admin/static/style.css"
+		media="all" />
+
+	<script
+		src="#{facesContext.externalContext.requestContextPath}/admin/static/admin.js" />
+
+	<ui:insert name="head" />
+</h:head>
+<h:body onload="on_body_load">
+	<p:growl id="growl" showDetail="true" showSummary="true"
+		autoUpdate="true" sticky="true" globalOnly="true" />
+
+	<p:layout fullPage="true">
+
+		<p:layoutUnit id="north" position="north" gutter="0"
+			collapsible="true">
+			<h:panelGrid border="0" columns="2" styleClass="topTable">
+
+				<h:panelGroup>
+					<h2>Administrative interface - Watch out!</h2>
+				</h:panelGroup>
+
+				<h:panelGroup>
+					<h:form id="northForm">
+						<p:menuButton
+							value="#{msg.admin_loggedas} #{loginBean.current.name}"
+							style="float: right; margin-right:5px;">
+							<p:menuitem value="Edit user"
+								disabled="#{not loginBean.isLoggedIn()}"
+								action="#{adminsBean.editCurrentUser}"
+								icon="ui-icon ui-icon-pencil" />
+							<p:menuitem value="Log out" icon="ui-icon ui-icon-close"
+								action="#{loginBean.logout}" />
+						</p:menuButton>
+					</h:form>
+				</h:panelGroup>
+			</h:panelGrid>
+
+		</p:layoutUnit>
+
+		<p:layoutUnit id="west" position="west" size="200" collapsible="true"
+			header="Menu" effect="drop">
+			<h:form id="westForm">
+				<p:menu styleClass="westMenu">
+					<p:menuitem value="Home" url="/admin/index.jsf" icon="ui-icon-home" />
+					<p:submenu label="#{msg.admin_menu_data}">
+						<p:menuitem value="#{msg.admin_menu_data_transports}"
+							url="/admin/transports/main.jsf" icon="ui-icon-suitcase" />
+						<p:menuitem value="#{msg.admin_menu_data_places}"
+							url="/admin/places/main.jsf" icon="ui-icon-image" />
+						<p:menuitem value="#{msg.admin_menu_data_quests}"
+							url="/admin/quests/main.jsf" icon="ui-icon-star" />
+					</p:submenu>
+					<p:submenu label="#{msg.admin_menu_risks}">
+						<p:menuitem value="#{msg.admin_menu_risks_transportationrisks}"
+							url="/admin/transportationrisks/main.jsf" icon="ui-icon-suitcase" />
+						<p:menuitem value="#{msg.admin_menu_risks_placesrisks}"
+							url="/admin/placesrisks/main.jsf" icon="ui-icon-image" />
+						<p:menuitem value="#{msg.admin_menu_risks_insurances}"
+							url="/admin/insurances/main.jsf" icon="ui-icon-script" />
+					</p:submenu>
+					<p:submenu label="#{msg.admin_menu_players}">
+						<p:menuitem value="#{msg.admin_menu_players_players}"
+							url="/admin/players/main.jsf" icon="ui-icon-person" />
+					</p:submenu>
+					<p:submenu label="#{msg.admin_menu_system}">
+						<p:menuitem value="#{msg.admin_menu_system_user_config}"
+							url="/admin/admins/main.jsf" icon="ui-icon-gear" />
+						<p:menuitem value="#{msg.admin_menu_system_reloadgamedata}"
+							action="#{gameBean.reloadGameData}"
+							icon="ui-icon-arrowrefresh-1-w" />
+					</p:submenu>
+				</p:menu>
+				<p:menu styleClass="westMenu">
+					<p:menuitem value="Open Game" url="../index.jsf"
+						icon="ui-icon-extlink" target="_blank" />
+				</p:menu>
+			</h:form>
+		</p:layoutUnit>
+
+		<p:layoutUnit position="center">
+			<ui:insert name="breadcrumb" />
+			<br />
+			<ui:insert name="content" />
+		</p:layoutUnit>
+
+	</p:layout>
+
+	<ui:insert name="dialogs" />
+
+	<p:ajaxStatus onstart="PF('statusDialog').show();"
+		oncomplete="PF('statusDialog').hide();" />
+
+	<p:dialog modal="true" closable="false" draggable="false"
+		resizable="false" showHeader="false" widgetVar="statusDialog">
+		<h:panelGrid style="text-align: center;">
+			<h:outputText value="#{msg.ajaxstatus_loading_message}" />
+			<p:graphicImage value="/static/img/loading.gif" />
+		</h:panelGrid>
+	</p:dialog>
+
+</h:body>
+</html>

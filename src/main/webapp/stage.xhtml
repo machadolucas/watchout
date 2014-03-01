@@ -1,0 +1,1100 @@
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core" template="/template.xhtml">
+
+	<ui:define name="head">
+		<title>Watch out!</title>
+
+	</ui:define>
+
+	<ui:define name="content">
+
+		<p:growl autoUpdate="true" showDetail="true" sticky="true" id="growl"
+			globalOnly="true" />
+
+		<p:outputPanel styleClass="flexContainer fullSpace">
+			
+			<p:outputPanel
+				styleClass="statusBar flexContainerVertical unselectable">
+				<p:outputPanel>
+					<div class="flexContainer">
+						<div class="flexItem">
+							<p:commandButton value="Menu" styleClass="button menu blue"
+								onclick="PF('menuPopup').show()" />
+						</div>
+						<div class="sidebarToggler">
+							<i class="fa fa-chevron-left"></i>
+						</div>
+					</div>
+
+					<p:outputPanel styleClass="playerName">
+						<h:outputText value="#{playerSessionBean.player.name}" />
+					</p:outputPanel>
+					
+					<p:outputPanel styleClass="statusItem" autoUpdate="true">
+						<i class="fa fa-sun-o"></i>
+						<h:outputText value=" #{playerSessionBean.player.energy}" />
+					</p:outputPanel>
+					<p:outputPanel styleClass="statusItem" autoUpdate="true">
+						<i class="fa fa-money"></i>
+						<h:outputText value=" #{playerSessionBean.player.cash}" />
+					</p:outputPanel>
+				</p:outputPanel>
+				
+				<p:outputPanel styleClass="sectionTitle">
+					<h:outputText value="Your insurances" />
+				</p:outputPanel>
+				<p:outputPanel id="insurancesPanel" autoUpdate="true"
+					styleClass="flexItem insurancesPanel flexContainer flexWrap">
+					<c:forEach var="insurance" items="#{playerSessionBean.insurances}">
+						
+						<p:outputPanel id="insurance_#{insurance.idinsurances}" styleClass="insuranceBlock">
+							<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+								<f:param name="id" value="#{insurance.idinsurances}" />
+							</p:graphicImage>
+						</p:outputPanel>
+						
+						<p:overlayPanel id="insurancePreview_#{insurance.idinsurances}" for="insurance_#{insurance.idinsurances}" hideEffect="fade"
+							widgetVar="insurancePreview_#{insurance.idinsurances}" styleClass="overlayPanel">
+							<div class="flexContainer">
+								<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+									<f:param name="id" value="#{insurance.idinsurances}" />
+								</p:graphicImage>
+								<h4 class="flexItem"><h:outputText value="#{insurance.name}"/></h4>
+							</div>
+							<div class="flexContainer">
+								<p class="description"><h:outputText value="#{insurance.description}"/></p>
+							</div>
+							<hr/>
+							<div class="flexContainer">
+								<ui:fragment rendered="#{not empty insurance.insurancesHasTransportationriskses.toArray()}">
+									<div class="flexItem risksBox">
+										<p class="tableHeader"><h:outputText value="This insurance covers the following transportation risks:"/></p>
+										<table>
+											<tr>
+												<th><h:outputText value="Risk"/></th>
+												<th><h:outputText value="Cover"/></th>
+											</tr>
+											
+											<ui:repeat var="trisk" value="#{insurance.insurancesHasTransportationriskses.toArray()}">
+												<tr>
+													<td>
+														<strong><h:outputText value="#{trisk.transportationrisks.name}" /></strong>
+														<h:outputText value=" - #{trisk.transportationrisks.description}" />
+													</td>
+													<td><h:outputText value="#{trisk.cover}" /></td>
+												</tr>
+											</ui:repeat>
+										</table>
+									</div>
+								</ui:fragment>
+								<ui:fragment rendered="#{not empty insurance.insurancesHasPlacesriskses.toArray()}">
+									<div class="flexItem risksBox">
+										<p class="tableHeader"><h:outputText value="This insurance covers the following location risks:"/></p>
+										<table>
+											<tr>
+												<th><h:outputText value="Risk"/></th>
+												<th><h:outputText value="Cover"/></th>
+											</tr>
+											<ui:repeat var="prisk" value="#{insurance.insurancesHasPlacesriskses.toArray()}">
+												<tr>
+													<td>
+														<strong><h:outputText value="#{prisk.placesrisks.name}" /></strong>
+														<h:outputText value=" - #{prisk.placesrisks.description}" />
+													</td>
+													<td><h:outputText value="#{prisk.cover}" /></td>
+												</tr>
+											</ui:repeat>
+										</table>
+									</div>
+								</ui:fragment>
+							</div>
+					   </p:overlayPanel>
+					   
+					</c:forEach>
+					<p:commandLink onclick="PF('manageInsurances').show();">
+					<p:outputPanel id="addInsurance" styleClass="insuranceBlock add">
+						<i class="fa fa-shopping-cart"></i><br/><span class="hidden"><h:outputText value="buy" /></span>
+					</p:outputPanel>
+					</p:commandLink>
+					
+				</p:outputPanel>
+				
+				<p:outputPanel id="objectiveDetails" styleClass="status-objective">
+					<h:outputText styleClass="quest-name"
+						value="#{playerSessionBean.activeQuest.name}" />
+					<h:outputText styleClass="destination-name"
+						value="Objective: #{playerSessionBean.activeQuest.placesByDestination.name}" />
+				</p:outputPanel>
+				<p:overlayPanel for="objectiveDetails">
+					<p>
+						<h:outputText
+							value="In this quest, your objective is to arrive in #{playerSessionBean.activeQuest.placesByDestination.name}"
+							style="font-weight: bold" />
+					</p>
+					<p><h:outputText value="#{playerSessionBean.activeQuest.description}" /></p>
+				</p:overlayPanel>
+
+			</p:outputPanel>
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			<p:outputPanel styleClass="flexItem game-content">
+				<h:form id="gameForm">
+					<p:gmap center="64.914665, 26.067255" zoom="5" type="ROADMAP" styleClass="fullMap"
+					 widgetVar="fullMap" streetView="false" disableDefaultUI="true" />
+					<div id="placesLinks">
+						<ui:repeat var="place" value="#{gameBean.places.toArray()}">
+							<p:commandLink action="#{playerSessionBean.selectPlaceForTravel(place)}"
+								 styleClass="link-#{place.idplaces}" update=":travelForm:wizard"
+								 oncomplete="PF('wizard').loadStep(PF('wizard').cfg.steps[0], true);openOverlay()" >
+								<h:outputText value="Select this place..." />
+							</p:commandLink>
+						</ui:repeat>
+					</div>
+					<p:outputPanel id="js-redraw" autoUpdate="true">
+						<script>
+						function redrawAfterMovement() {
+							
+							window.destinationsData = [];
+							
+							<ui:repeat var="destination" value="#{playerSessionBean.currentPlace.placesHasTransportses.toArray()}">
+								data = {
+									id: '#{destination.destination.idplaces}',
+									name: '#{destination.destination.name}',
+									location: '#{destination.destination.location}',
+									description: '#{destination.destination.description}',
+									coordinates: '#{destination.destination.mapCoordinates}',
+									cost: '#{destination.moneyCost}',
+									transport: '#{destination.transports.name}',
+									transportDescription: '#{destination.transports.description}'
+								};
+								destinationsData.push(data);
+							</ui:repeat>
+							
+							if (typeof travelHistoryLines !== 'undefined'){
+								for (var i=0,  tot=travelHistoryLines.length; i <h:outputText value="&lt;" escape="false"/> tot; i++) {
+									travelHistoryLines[i].setMap(null);
+								}
+							}
+							window.travelHistoryLines = [];
+							
+							
+							window.travelHistoryData = [];
+							<ui:repeat var="item" value="#{playerSessionBean.turnsHistory}" varStatus="status">
+								movement = {
+									index: #{status.index},
+									origin: '#{item.placesHasTransports.places.mapCoordinates}',
+									destination: '#{item.placesHasTransports.destination.mapCoordinates}',
+									transport: '#{item.placesHasTransports.transports.name}',
+									cost: '#{item.placesHasTransports.moneyCost}'
+								};
+								travelHistoryData.push(movement);
+							</ui:repeat>
+							
+							for (var i=0, tot=travelHistoryData.length; i <h:outputText value="&lt;" escape="false"/> tot; i++) {
+								var lineSymbol = {
+									path: 'M 0,-1 0,1',
+									strokeOpacity: 0.4,
+									scale: 4
+								};
+							
+								originbits = travelHistoryData[i].origin.split(/,\s*/);
+								destinationbits = travelHistoryData[i].destination.split(/,\s*/);
+								var lineCoordinates = [
+									new google.maps.LatLng( parseFloat(originbits[0]), parseFloat(originbits[1]) ),
+									new google.maps.LatLng( parseFloat(destinationbits[0]), parseFloat(destinationbits[1]) )
+								];
+								
+								var line = new google.maps.Polyline({
+									path: lineCoordinates,
+									strokeOpacity: 0,
+									zIndex: 7,
+									icons: [{
+										icon: lineSymbol,
+										offset: '0',
+										repeat: '20px'
+									}],
+									map: gmap
+								});
+								travelHistoryLines.push(line);
+								
+							}
+							
+							window.bounds = new google.maps.LatLngBounds();
+							processDestinationData();
+							
+							if (typeof availablePlacesLines !== 'undefined'){
+								for (var i=0,  tot=availablePlacesLines.length; i <h:outputText value="&lt;" escape="false"/> tot; i++) {
+									availablePlacesLines[i].setMap(null);
+								}
+							}
+							window.availablePlacesLines = [];
+							
+							if (typeof availablePlacesMarkers !== 'undefined'){
+								for (var i=0,  tot=availablePlacesMarkers.length; i <h:outputText value="&lt;" escape="false"/> tot; i++) {
+									availablePlacesMarkers[i].setMap(null);
+								}
+							}
+							window.availablePlacesMarkers = [];
+							
+							//Creates markers for possible destinations
+							for (var i=0,  tot=destinationsOptions.length; i <h:outputText value="&lt;" escape="false"/> tot; i++) {
+							  var bits = destinationsOptions[i].coordinates.split(/,\s*/);
+							  var pathBetween = [
+								  new google.maps.LatLng(#{playerSessionBean.currentPlace.mapCoordinates}),
+								  new google.maps.LatLng( parseFloat(bits[0]), parseFloat(bits[1]) ),
+								];
+								var path = new google.maps.Polyline({
+								 path: pathBetween,
+								 geodesic: true,
+								 strokeColor: '#00cc00',
+								 strokeOpacity: 0.9,
+								 zIndex: 6,
+								 strokeWeight: 3
+								});
+														
+								path.setMap(gmap);
+								availablePlacesLines.push(path);
+														
+								var mark = new google.maps.Marker({
+									position: new google.maps.LatLng( parseFloat(bits[0]), parseFloat(bits[1]) ),
+									map: gmap,
+									icon: 'http://maps.google.com/mapfiles/ms/micons/green-dot.png',
+									zIndex: 20,
+									title: destinationsOptions[i].name
+								});
+								tlines = '<div class="infoWindow"><h3>' + destinationsOptions[i].name + '</h3>';
+								tlines += '<p>You can travel to this place now with the following options:</p><ul>'; 
+								
+								for (var j=0,  totj=destinationsOptions[i].transports.length; j <h:outputText value="&lt;" escape="false"/> totj; j++) {
+									line = '<li><b>' + destinationsOptions[i].transports[j].name + '</b> - Costs ' +
+									destinationsOptions[i].transports[j].cost +'</li>';
+									tlines += line;
+								}
+								tlines += '</ul>'; 
+								tlines += $('.link-'+destinationsOptions[i].id)[0].outerHTML; 
+								mark.html = tlines + '</div>';
+								
+								google.maps.event.addListener(mark, 'click', function() {
+									infowindow.setContent(this.html);
+									infowindow.open(gmap, this);
+								});
+								availablePlacesMarkers.push(mark);
+								bounds.extend(new google.maps.LatLng( parseFloat(bits[0]), parseFloat(bits[1]) ));
+							}
+							
+							window.markerActualPosition.title = '#{playerSessionBean.currentPlace.name}';
+							window.markerActualPosition.setPosition(new google.maps.LatLng(#{playerSessionBean.currentPlace.mapCoordinates}));
+							window.markerActualPosition.html = '<div class="infoWindow"><h3>#{playerSessionBean.currentPlace.name}</h3>'+
+							   '<p>This is where you are now.</p>'+
+							   '</div>'
+							bounds.extend(new google.maps.LatLng(#{playerSessionBean.currentPlace.mapCoordinates}));
+							
+							
+							// Verify if Objective is reachable, then adjust infowindow html
+						   isObjective = -1;
+							for (var i=0,  tot=destinationsOptions.length; i <h:outputText value="&lt;" escape="false"/> tot; i++) {
+								if(destinationsOptions[i].id == '#{playerSessionBean.activeQuest.placesByDestination.idplaces}') {
+									isObjective = i;
+									break;
+								}
+							}
+							if(isObjective <h:outputText value="&gt;" escape="false"/> -1){
+								tlines = '<div class="infoWindow"><h3>' + destinationsOptions[isObjective].name + '</h3>';
+								tlines += '<p>This is your objective. Once you reach this place, the game ends.</p>';
+								tlines += '<p>You can travel to this place now with the following options:</p><ul>';
+								for (var j=0,  totj=destinationsOptions[isObjective].transports.length; j <h:outputText value="&lt;" escape="false"/> totj; j++) {
+									line = '<li><b>'+ destinationsOptions[isObjective].transports[j].name +'</b> - Costs ' +
+									destinationsOptions[isObjective].transports[j].cost +'</li>';
+									tlines += line;
+								}
+								tlines += '</ul>';
+								tlines += $('.link-'+destinationsOptions[isObjective].id)[0].outerHTML;
+								window.markerDestination.html = tlines + '</div>';
+							}
+							bounds.extend(new google.maps.LatLng(#{playerSessionBean.activeQuest.placesByDestination.mapCoordinates}));
+							
+							
+							
+							//Remember the property set by PrimeFaces
+							var tmp = gmap.fitBounds;
+							gmap.fitBounds = google.maps.Map.prototype.fitBounds;
+							gmap.fitBounds(bounds);
+							gmap.fitBounds = tmp;
+						}
+						</script>
+					</p:outputPanel>
+				</h:form>
+				<script>
+				$(function() {
+					//Changes map style
+					window.gmap = PF('fullMap').getMap();
+					gmap.set('styles', [{
+						"featureType": "road",
+						"stylers": [{"visibility": "off"}]
+					}, {
+						"featureType": "transit",
+						"stylers": [{"visibility": "off"}]
+					}, {
+						"featureType": "administrative.locality",
+						"elementType": "labels",
+						"stylers": [{"visibility": "off"}]
+					}, {
+						"featureType": "water",
+						"elementType": "labels",
+						"stylers": [{"visibility": "off"}]
+					}, {
+						"featureType": "administrative.province",
+						"stylers": [{"visibility": "off"}]
+					}, {
+						"elementType": "labels",
+						"stylers": [{"visibility": "off"}]
+					}]);
+					
+					window.bounds = new google.maps.LatLngBounds();
+					window.infowindow = null;
+					infowindow = new google.maps.InfoWindow({
+						content: "loading..."
+					});
+					
+					//Create markers for all the places
+					<ui:repeat var="place" value="#{gameBean.places.toArray()}">
+						var mark = new google.maps.Marker({
+							position: new google.maps.LatLng(#{place.mapCoordinates}),
+							map: gmap,
+							icon: 'http://maps.google.com/mapfiles/ms/micons/red.png',
+							zIndex: 10,
+							opacity: 0.5,
+							title: '#{place.name}',
+							html: '<div class="infoWindow"><h3>#{place.name}</h3>' +
+							'<p>There are no transports available to go here from where you are...</p></div>'
+						})
+						google.maps.event.addListener(mark, 'click', function() {
+							infowindow.setContent(this.html);
+							infowindow.open(gmap, this);
+						});
+					</ui:repeat>
+					
+					
+					//Creates origin marker
+					var markerOrigin = new google.maps.Marker({
+					  position: new google.maps.LatLng(#{playerSessionBean.activeQuest.placesByOrigin.mapCoordinates}),
+					  map: gmap,
+					  icon : 'http://maps.google.com/mapfiles/ms/icons/homegardenbusiness.png',
+					  zIndex: 15,
+					  title: '#{playerSessionBean.activeQuest.placesByOrigin.name}',
+					  html: '<div class="infoWindow"><h3>#{playerSessionBean.activeQuest.placesByOrigin.name}</h3>'+
+					   '<p>This is where you started the game.</p>'+
+					   '</div>'
+					});
+					google.maps.event.addListener(markerOrigin, 'click', function() {
+						infowindow.setContent(this.html);
+						infowindow.open(gmap, this);
+					});
+					bounds.extend(new google.maps.LatLng(#{playerSessionBean.activeQuest.placesByOrigin.mapCoordinates}));
+					
+					//Creates destination/objective marker
+					window.markerDestination = new google.maps.Marker({
+					  position: new google.maps.LatLng(#{playerSessionBean.activeQuest.placesByDestination.mapCoordinates}),
+					  map: gmap,
+					  icon : 'http://maps.google.com/mapfiles/kml/pal3/icon28.png',
+					  zIndex: 100,
+					  title: '#{playerSessionBean.activeQuest.placesByDestination.name}',
+					  html: '<div class="infoWindow"><h3>#{playerSessionBean.activeQuest.placesByDestination.name}</h3>'+
+					   '<p>This is your objective. Once you reach this place, the game ends.</p></div>'
+					});
+					google.maps.event.addListener(markerDestination, 'click', function() {
+						infowindow.setContent(this.html);
+						infowindow.open(gmap, this);
+					});
+					bounds.extend(new google.maps.LatLng(#{playerSessionBean.activeQuest.placesByDestination.mapCoordinates}));
+
+					
+					//Creates actual position marker
+					window.markerActualPosition = new google.maps.Marker({
+						position: new google.maps.LatLng(#{playerSessionBean.currentPlace.mapCoordinates}),
+						map: gmap,
+						icon: 'http://maps.google.com/mapfiles/ms/micons/man.png',
+						zIndex: 200,
+						animation: google.maps.Animation.BOUNCE,
+					   title: '#{playerSessionBean.currentPlace.name}',
+					   html: '<div class="infoWindow"><h3>#{playerSessionBean.currentPlace.name}</h3>'+
+					   '<p>This is where you are now.</p>'+
+					   '</div>'
+					});
+					google.maps.event.addListener(markerActualPosition, 'click', function() {
+						infowindow.setContent(this.html);
+						infowindow.open(gmap, this);
+					});
+					bounds.extend(new google.maps.LatLng(#{playerSessionBean.currentPlace.mapCoordinates}));
+
+					
+					
+					//Toggle to minimize and restore the sidebar
+					$('.sidebarToggler').on('click', function(){
+						toggleSidebar();
+					});
+					
+					redrawAfterMovement();
+				});
+				
+				function toggleSidebar(){
+					if($(this).find('i').hasClass('fa-chevron-left')){
+						$(this).find('i').removeClass('fa-chevron-left');
+						$(this).find('i').addClass('fa-chevron-right');
+						$('.status-objective, .playerName, .statusItem, .button.menu, .sectionTitle, .insurancesPanel').hide();
+						$('.statusBar').addClass('minimized', 200);
+						
+					} else {
+						$(this).find('i').removeClass('fa-chevron-right');
+						$(this).find('i').addClass('fa-chevron-left');
+						$('.statusBar').removeClass('minimized', 200, function() {
+							$('.status-objective, .playerName, .statusItem, .button.menu, .sectionTitle, .insurancesPanel').show('fade');
+						});
+					}
+				}
+				
+				function processDestinationData() {
+					destinationsOptions = [];
+					for (var idata=0,  tot=destinationsData.length; idata <h:outputText value="&lt;" escape="false"/> tot; idata++) {
+						existingDestination = -1;
+						for (var jex=0,  totj=destinationsOptions.length; jex <h:outputText value="&lt;" escape="false"/> totj; jex++) {
+							if(destinationsOptions[jex].id == destinationsData[idata].id) {
+								existingDestination = jex;
+							}
+						}
+						
+						if (existingDestination <h:outputText value="&gt;" escape="false"/> -1){
+							
+							transport = {
+								cost: destinationsData[idata].cost,
+								name: destinationsData[idata].transport,
+								description: destinationsData[idata].transportDescription
+							};
+							destinationsOptions[existingDestination].transports.push(transport);
+							
+						} else {
+							option = {
+								id: destinationsData[idata].id,
+								name: destinationsData[idata].name,
+								location: destinationsData[idata].location,
+								description: destinationsData[idata].description,
+								coordinates: destinationsData[idata].coordinates,
+								transports: [{
+									cost: destinationsData[idata].cost,
+									name: destinationsData[idata].transport,
+									description: destinationsData[idata].transportDescription
+								}]
+							};
+							
+							destinationsOptions.push(option);
+						}
+					}
+				}
+				
+				function blockOverlay(){
+					$('.fullmapOverlay').addClass('blocked');
+					$('#overlayToggler').hide();
+				}
+				function unblockOverlay(){
+					$('.fullmapOverlay').removeClass('blocked');
+					$('#overlayToggler').show();
+				}
+				
+				</script>
+				
+				<h:form id="travelForm">
+					<p:outputPanel styleClass="fullmapOverlay flexContainerVertical">
+						<p:outputPanel styleClass="flexContainer statuslines" autoUpdate="true">
+							<div class="flexContainer flexItem">
+								<img src="http://maps.google.com/mapfiles/ms/micons/man.png" />
+								<p><h:outputText value="You are in #{playerSessionBean.currentPlace.name}"
+									styleClass="current-place-name" />
+								<h:outputText value=" - #{playerSessionBean.currentPlace.location}"
+									styleClass="current-place-location" /></p>
+							</div>
+							<div class="flexContainer flexItem">
+								<img src="http://maps.google.com/mapfiles/kml/pal3/icon28.png" />
+								<p><h:outputText value="Your objective: #{playerSessionBean.activeQuest.placesByDestination.name}"
+									styleClass="current-place-name" />
+								<h:outputText value=" - #{playerSessionBean.activeQuest.placesByDestination.location}"
+									styleClass="current-place-location" /></p>
+							</div>
+						</p:outputPanel>
+						<p:outputPanel id="wizardPanel" styleClass="flexContainer flexItem travelWizard" style="display: none;">
+							<p:wizard id="wizard" widgetVar="wizard" showNavBar="false"
+								flowListener="#{playerSessionBean.onWizardProcess}" styleClass="flexItem flexContainerVertical">
+								
+								<p:tab id="transport" title="Choose transport">
+									<p:outputPanel styleClass="flexContainer" autoUpdate="true">
+										<p:outputPanel styleClass="flexItem destinationLabel" rendered="#{not empty playerSessionBean.selectedMovement}">
+											<h:outputText value="Selected destination:" />
+											<h:outputText value="#{playerSessionBean.selectedPlaceForTravel.name}" styleClass="value" />
+										</p:outputPanel>
+										<p:outputPanel styleClass="flexItem transportLabel" rendered="#{not empty playerSessionBean.selectedMovement}">
+											<h:outputText value="Selected transport:" />
+											<h:outputText value="#{playerSessionBean.selectedMovement.transport.name}" styleClass="value" />
+										</p:outputPanel>
+									</p:outputPanel>
+									<p:outputPanel styleClass="flexContainer" rendered="#{empty playerSessionBean.selectedMovement}">
+										<h:outputText value="Please select a place in the map so you can travel there..."
+											styleClass="notice flexItem" />
+									</p:outputPanel>
+									<div class="flexContainerVertical">
+										<div id="graphs" class="flexItem">
+										</div>
+									</div>
+									<div class="flexContainerVertical chooseTransportTab">
+										<div class="flexContainer">
+											<ui:repeat var="option" value="#{playerSessionBean.movementOptions}">
+												<p:commandLink process="@this"
+													action="#{playerSessionBean.selectTransportForTravel(option)}">
+													<p:outputPanel styleClass="transportBlock">
+														<p class="name"><h:outputText value="#{option.transport.name}" /></p>
+														<p class="cost"><h:outputText value="Costs #{option.cost}" /></p>
+													</p:outputPanel>
+												</p:commandLink>
+											</ui:repeat>
+										</div>
+									</div>
+									<p:outputPanel styleClass="flexContainer" rendered="#{not empty playerSessionBean.selectedMovement}">
+										<script>
+										
+										window.riskData = {};
+										riskData.categories = [];
+										riskData.riskCosts = [];
+										riskData.riskCovers = [];
+										riskData.risks = [];
+										<ui:repeat var="option" value="#{playerSessionBean.movementOptions}">
+											category = {
+												name: '#{option.transport.name}',
+												y: #{option.cost}
+											};
+											riskData.categories.push(category);
+											
+											riskCost = {
+												name: '#{option.transport.name}',
+												y: #{option.riskCostWithInsurances},
+												drilldown: '#{option.transport.idtransports}'
+											};
+											riskData.riskCosts.push(riskCost);
+											
+											riskCover = {
+												name: '#{option.transport.name}',
+												y: #{option.totalRiskCover},
+												drilldown: '#{option.transport.idtransports}'
+											};
+											riskData.riskCovers.push(riskCover);
+											
+											riskCost = {
+												id: '#{option.transport.idtransports}',
+												name: 'Risk cost',
+												data: []
+											};
+											riskProbability = {
+												id: '#{option.transport.idtransports}',
+												name: 'Probability',
+												data: []
+											};
+											<ui:repeat var="risk" value="#{option.trisks}">
+												individualData = {
+														name: '#{risk.name}',
+														y: #{risk.cashCost}
+												};
+												riskCost.data.push(individualData);
+												individualData = {
+														name: '#{risk.name}',
+														y: #{risk.frequency}
+												};
+												riskProbability.data.push(individualData);
+											</ui:repeat>
+											riskData.risks.push(riskCost);
+											riskData.risks.push(riskProbability);
+										</ui:repeat>
+										
+										$(function () {
+
+							            // Create the chart
+											window.graphs = $('#graphs').highcharts({
+												 credits: {
+											        enabled: false
+											    },
+											    chart: {
+											        type: 'column'
+											    },
+											    title: {
+											        text: 'Comparison'
+											    },
+											    subtitle: {
+							                    text: 'Click the columns to view more, or the legend to show and hide data'
+							                },
+											    xAxis: {
+											        type: 'category'
+											    },
+											    yAxis: {
+							                    title: {
+							                        text: 'Cost'
+							                    }
+							                },
+											    legend: {
+											        enabled: true
+											    },
+											
+											    plotOptions: {
+											        series: {
+											            borderWidth: 0,
+											            dataLabels: {
+											                enabled: true
+											            }
+											        },
+											        column: {
+									                	stacking: 'normal'
+										            }
+											    },
+											
+											    series: [{
+											        name: 'Cost',
+											        data: riskData.categories
+											    	}, {
+											        name: 'Your insurances coverage',
+											        data: riskData.riskCovers,
+											        stack: 'risk'
+											    	}, {
+											        name: 'Possible risk cost',
+											        data: riskData.riskCosts,
+											        stack: 'risk'
+											    	}
+											    ],
+											    drilldown: {
+											        series: riskData.risks
+											    }
+											});
+										});
+										</script>
+									</p:outputPanel>
+									
+									<p:outputPanel styleClass="flexContainer" rendered="#{not empty playerSessionBean.selectedMovement}">
+										<div class="flexItem"></div>
+										<p:commandButton value="Next" actionListener="#{playerSessionBean.calculateRisks}" oncomplete="PF('wizard').next();blockOverlay();" disabled="#{empty playerSessionBean.selectedMovement}"/>
+									</p:outputPanel>
+								</p:tab>
+								
+								<p:tab id="jackpot" title="Travel">
+									<p:outputPanel styleClass="flexContainerVertical playTab">
+										<h3>
+											<h:outputText value="You are traveling and you are subject to risks. Try your luck!" />
+										</h3>
+										<ul class="slot">
+							            <li><span><i class="fa fa-bomb"></i></span></li>
+							            <li><span><i class="fa fa-bus"></i></span></li>
+							            <li><span><i class="fa fa-male"></i></span></li>
+							            <li><span><i class="fa fa-plane"></i></span></li>
+							            <li><span><i class="fa fa-car"></i></span></li>
+						        		</ul>
+										<p:commandButton value="Spin!" id="playBtn" styleClass="button" onstart="spinningSound.play();" widgetVar="playBtn"
+											action="#{playerSessionBean.moveBetween}" oncomplete="infowindow.close();redrawAfterMovement();PF('playBtn').disable();PF('backToTransport').disable();PF('nextToResults').enable()" />
+										<script type="text/javascript" charset="utf-8">  
+											var spinningSound;
+											function eventHappened(){
+												if('#{playerSessionBean.jackpotResult}' == '1, 1, 1'){
+													$('.jSlots-wrapper').addClass('tada');
+												}
+											}
+											$(function() {
+												soundManager.setup({
+												  url: '/static/',
+												  onready: function() {
+													  spinningSound = soundManager.createSound({
+													      id: 'spinning',
+													      url: 'static/spinning.mp3'
+												    	});
+												  }
+												});
+											  	
+												$('.slot').jSlots({  
+												  number : 3,
+												  endNumbers: [#{playerSessionBean.jackpotResult}],
+												  easing : 'easeOutSine',
+										        spinner : PrimeFaces.escapeClientId('travelForm:playBtn'),  
+										        winnerNumber : 1,
+										        onEnd: function(){eventHappened();},
+										        time : 4000,
+										        loops : 3
+											    });
+											});  
+										</script>
+									</p:outputPanel>
+									<div class="flexContainer">
+										<p:commandButton widgetVar="backToTransport" value="Back" onclick="PF('wizard').back();unblockOverlay();"/>
+										<div class="flexItem"></div>
+										<p:commandButton widgetVar="nextToResults" value="Next" onclick="PF('wizard').next()" disabled="true"/>
+									</div>
+								</p:tab>
+			
+								<p:tab id="results" title="Results" disabled="true">
+									<p:outputPanel styleClass="flexContainerVertical resultsTab">
+										<h3>
+											<h:outputText value="You are now in #{playerSessionBean.currentPlace.name}. " />
+											<b><h:outputText rendered="#{playerSessionBean.isCurrentQuestCompleted}"
+												value="That was your objective and you won the game!" />
+											</b>
+										</h3>
+										
+										<p:outputPanel rendered="#{not empty playerSessionBean.calculatedMovement.trisks}" styleClass="linedContainer">
+											<h4>
+												<h:outputText value="What happened during transportation:" />
+											</h4>
+											<div class="flexContainer">
+												<div class="flexItem">
+													<h5>Risks that happened</h5>
+													<ul>
+													<ui:repeat var="risk" value="#{playerSessionBean.calculatedMovement.trisks}">
+														<li>
+															<p><h:outputText id="riskName" value="#{risk.name}" styleClass="overlayLabel" /></p>
+															<p><h:outputText value="Costed " /><i class="fa fa-money"></i>
+																<h:outputText value="#{risk.cashCost}. Consumed " /><i class="fa fa-sun-o"></i>
+																<h:outputText value="#{risk.energyCost}." /></p>
+															<p:overlayPanel for="riskName" showEffect="fade" hideEffect="fade" showEvent="mouseover"
+																hideEvent="mouseout">
+																<h4><h:outputText value="#{risk.name} (#{risk.transports.name})" /></h4>
+																<p class="description"><h:outputText value="#{risk.description}" /></p>
+																<p>
+																	<h:outputText value="Risk cost: " /><i class="fa fa-money"></i>
+																	<h:outputText value="#{risk.cashCost}" /><br/>
+																	<h:outputText value="Energy cost: " /><i class="fa fa-sun-o"></i>
+																	<h:outputText value="#{risk.energyCost}" /><br/>
+																	<b><h:outputText value="Probability: #{risk.frequency}" /></b>
+																</p>
+															</p:overlayPanel>
+														</li>
+													</ui:repeat>
+													</ul>
+												</div>
+												<div class="flexItem">
+													<h5>What your insurances covered</h5>
+													<ul>
+													<ui:repeat var="cover" value="#{playerSessionBean.moneyLosses.coveredTransportationRisks}">
+														<li>
+															<p>
+																<h:outputText value="Insurance " />
+																<h:outputText id="insuranceName" value="#{cover.insurances.name}" styleClass="overlayLabel" />
+															</p>
+															<p>
+																<h:outputText value="Covers " />
+																<b><h:outputText value="#{cover.transportationrisks.name}" /></b>
+																<h:outputText value=" up to " /><i class="fa fa-money"></i>
+																<h:outputText value="#{cover.cover}" />
+															</p>
+															<p:overlayPanel for="insuranceName" showEffect="fade" hideEffect="fade" showEvent="mouseover"
+																hideEvent="mouseout" styleClass="flexContainerVertical">
+																<div class="flexContainer">
+																	<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+																		<f:param name="id" value="#{cover.insurances.idinsurances}" />
+																	</p:graphicImage>
+																	<h4 class="flexItem"><h:outputText value="#{cover.insurances.name}"/></h4>
+																</div>
+																<div class="flexContainer">
+																	<p class="description"><h:outputText value="#{cover.insurances.description}"/></p>
+																</div>
+															</p:overlayPanel>
+														</li>
+													</ui:repeat>
+													</ul>
+												</div>
+											</div>
+										</p:outputPanel>
+										
+										<p:outputPanel rendered="#{not empty playerSessionBean.calculatedMovement.prisks}" styleClass="linedContainer">
+											<h4>
+												<h:outputText value="What happened in the destination:" />
+											</h4>
+											<div class="flexContainer">
+												<div class="flexItem">
+													<ul>
+													<ui:repeat var="risk" value="#{playerSessionBean.calculatedMovement.prisks}">
+														<li>
+															<p><h:outputText id="riskName" value="#{risk.name}" styleClass="overlayLabel"/></p>
+															<p><h:outputText value="Costed " /><i class="fa fa-money"></i>
+																<h:outputText value="#{risk.cashCost}. Consumed " /><i class="fa fa-sun-o"></i>
+																<h:outputText value="#{risk.energyCost}." /></p>
+															<p:overlayPanel for="riskName" showEffect="fade" hideEffect="fade" showEvent="mouseover"
+																hideEvent="mouseout">
+																<h4><h:outputText value="#{risk.name} (#{risk.places.name})" /></h4>
+																<p class="description"><h:outputText value="#{risk.description}" /></p>
+																<p>
+																	<h:outputText value="Risk cost: " /><i class="fa fa-money"></i>
+																	<h:outputText value="#{risk.cashCost}" /><br/>
+																	<h:outputText value="Energy cost: " /><i class="fa fa-sun-o"></i>
+																	<h:outputText value="#{risk.energyCost}" /><br/>
+																	<b><h:outputText value="Probability: #{risk.frequency}" /></b>
+																</p>
+															</p:overlayPanel>
+														</li>
+													</ui:repeat>
+													</ul>
+												</div>
+												<div class="flexItem">
+													<h5>What your insurances covered</h5>
+													<ul>
+													<ui:repeat var="cover" value="#{playerSessionBean.moneyLosses.coveredTransportationRisks}">
+														<li>
+															<p>
+																<h:outputText value="Insurance " />
+																<h:outputText id="insuranceName" value="#{cover.insurances.name}" styleClass="overlayLabel" />
+															</p>
+															<p>
+																<h:outputText value="Covers " />
+																<b><h:outputText value="#{cover.transportationrisks.name}" /></b>
+																<h:outputText value=" up to " /><i class="fa fa-money"></i>
+																<h:outputText value="#{cover.cover}" />
+															</p>
+															<p:overlayPanel for="insuranceName" showEffect="fade" hideEffect="fade" showEvent="mouseover"
+																hideEvent="mouseout" styleClass="flexContainerVertical">
+																<div class="flexContainer">
+																	<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+																		<f:param name="id" value="#{cover.insurances.idinsurances}" />
+																	</p:graphicImage>
+																	<h4 class="flexItem"><h:outputText value="#{cover.insurances.name}"/></h4>
+																</div>
+																<div class="flexContainer">
+																	<p class="description"><h:outputText value="#{cover.insurances.description}"/></p>
+																</div>
+															</p:overlayPanel>
+														</li>
+													</ui:repeat>
+													</ul>
+												</div>
+											</div>
+										</p:outputPanel>
+										<h5>
+											<h:outputText value="In total, you lost " /><i class="fa fa-money"></i>
+											<h:outputText value=" #{playerSessionBean.moneyLosses.total} and consumed " /><i class="fa fa-sun-o"></i>
+											<h:outputText value=" #{playerSessionBean.moneyLosses.energyConsumption}" />
+										</h5>
+										
+										<p:outputPanel styleClass="flexContainer" autoUpdate="true">
+											<div class="flexItem"></div>
+											<p:commandButton widgetVar="finishGame" value="Finish game"
+												rendered="#{playerSessionBean.isCurrentQuestCompleted}" action="#{playerSessionBean.finishGame}"/>
+											<p:commandButton rendered="#{not playerSessionBean.isCurrentQuestCompleted}" widgetVar="closeResults" value="Close" onclick="unblockOverlay();closeOverlay();"/>
+										</p:outputPanel>
+									</p:outputPanel>
+									
+									
+								</p:tab>
+								
+							</p:wizard>
+						</p:outputPanel>
+						<div id="overlayToggler"><i class="fa fa-chevron-down"></i></div>
+						<script type="text/javascript" charset="utf-8">
+						function closeOverlay(){
+							$('#overlayToggler i').removeClass('fa-chevron-up');
+							$('#overlayToggler i').addClass('fa-chevron-down');
+							$('.travelWizard').hide();
+						}
+						function openOverlay(){
+							$('#overlayToggler i').removeClass('fa-chevron-down');
+							$('#overlayToggler i').addClass('fa-chevron-up');
+							$('.travelWizard').show('fade');
+						}
+						$('#overlayToggler').on('click', function(){
+							if($(this).find('i').hasClass('fa-chevron-up')){
+								closeOverlay();
+							} else {
+								openOverlay();
+							}
+						});
+						</script>
+					</p:outputPanel>
+				</h:form>
+				
+			</p:outputPanel>
+		</p:outputPanel>
+
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog id="menuPopup" widgetVar="menuPopup" modal="true"
+			resizable="false" closeOnEscape="true" header="Main Menu"
+			styleClass="unselectable">
+			<h:form id="menuPopupForm">
+				<p:outputPanel styleClass="flexContainerVertical">
+					<p:commandButton value="Save game"
+						styleClass="button list flexItem"
+						actionListener="#{playerSessionBean.saveQuest}"
+						disabled="#{empty playerSessionBean.player.email}" />
+					<p:commandButton value="Exit game without saving"
+						styleClass="button list red flexItem"
+						action="#{playerSessionBean.endQuest}" />
+					<p:spacer height="15" />
+					<p:commandButton value="Close menu"
+						styleClass="button list blue flexItem"
+						onclick="PF('menuPopup').hide()" />
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="manageInsurances" widgetVar="manageInsurances" modal="true"
+			resizable="false" closeOnEscape="true"
+			header="Manage Insurances" styleClass="manageInsurancesPopup">
+			<h:form id="insurancesForm" styleClass="flexContainerVertical">
+				<p:outputPanel autoUpdate="true">
+					<p:pickList id="insurancePicklist" value="#{playerSessionBean.manageInsurancesPicklist}" var="insurance"
+						itemValue="#{insurance}" itemLabel="#{insurance.name}" converter="pickListConverter"
+						showSourceFilter="false" showTargetFilter="false">
+					
+					   <f:facet name="sourceCaption">Available</f:facet>
+					   <f:facet name="targetCaption">Selected</f:facet>
+					
+					   <p:ajax event="transfer" listener="#{playerSessionBean.newInsuranceSelection}"/>
+					
+						<p:column style="width:20%;">
+							<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+								<f:param name="id" value="#{insurance.idinsurances}" />
+							</p:graphicImage>
+						</p:column>
+						
+						<p:column style="width:55%;">
+							<h:outputText value="#{insurance.name}" />
+						</p:column>
+						
+						<p:column style="width:25%;">
+							<h:outputText value="#{insurance.cost}" />
+						</p:column>
+					</p:pickList>
+				</p:outputPanel>
+				<p:outputPanel styleClass="flexContainer" autoUpdate="true">
+					<p class="flexItem">
+						<h:outputText value="Total price: " />
+						<h:outputText id="totalInsuranceCost" value="#{playerSessionBean.totalCostOfNewInsurances}" styleClass="price">
+							<f:convertNumber pattern="#0.00" currencySymbol="€" type="currency" currencyCode="EUR" />
+						</h:outputText>
+					</p>
+					<p:commandButton value="Learn more..." onclick="PF('insurancesDlg').show();"/>
+				</p:outputPanel>
+				<p:outputPanel id="warning" autoUpdate="true">
+					<p class="warningText">
+						<h:outputText  value="You don't have enough money for that. Please review your insurance selection."
+							rendered="#{playerSessionBean.totalCostOfNewInsurances > playerSessionBean.player.cash}" />
+					</p>
+				</p:outputPanel>
+				
+				<p:outputPanel styleClass="flexContainer" autoUpdate="true">
+					<p:commandButton value="Back"
+						styleClass="button blue flexItem"
+						onclick="PF('manageInsurances').hide()" />
+					<p:spacer width="15" />
+					<p:commandButton value="Buy selected"
+						styleClass="button flexItem" onclick="PF('confirmBuyDialog').show()"
+						disabled="#{empty playerSessionBean.manageInsurancesPicklist.target or playerSessionBean.totalCostOfNewInsurances > playerSessionBean.player.cash}"/>
+				</p:outputPanel>
+			</h:form>
+		</p:dialog>
+		
+		<p:confirmDialog
+			header="#{msg.primefaces_confirmDialog_delete_header}"
+			message="Are you sure to buy the selected insurances? This can not be undone."
+			id="confirmBuyDialog" widgetVar="confirmBuyDialog">
+			<h:form id="confirmBuyForm">
+				<p:commandButton type="button" styleClass="button blue flexItem"
+					label="#{msg.global_generic_label_no}"
+					title="#{msg.command_cancel_alt}"
+					value="#{msg.global_generic_label_no}"
+					onclick="PF('confirmBuyDialog').hide();" />
+				<p:commandButton id="confirmDeleteButton" styleClass="button flexItem"
+					label="#{msg.global_generic_label_yes}"
+					title="#{msg.command_confirm_alt}"
+					value="#{msg.global_generic_label_yes}"
+					actionListener="#{playerSessionBean.buyNewInsurances}"
+					oncomplete="PF('confirmBuyDialog').hide();PF('manageInsurances').hide();" />
+			</h:form>
+		</p:confirmDialog>
+		
+		<p:dialog widgetVar="insurancesDlg" closable="true" modal="true" header="About insurances" draggable="false"
+			closeOnEscape="true" onHide="PF('insurancesDlg').toggleMaximize();" onShow="PF('insurancesDlg').toggleMaximize();" id="insurancesDlg" >
+			<ui:repeat var="insurance" value="#{gameBean.insurances}">
+				<div class="flexContainerVertical insuranceInfo">
+					<div class="flexContainer">
+						<p:graphicImage value="#{gameBean.streamedInsuranceIcon}">
+							<f:param name="id" value="#{insurance.idinsurances}" />
+						</p:graphicImage>
+						<h4 class="flexItem"><h:outputText value="#{insurance.name}"/></h4>
+						<h4><h:outputText value="Costs #{insurance.cost}"/></h4>
+					</div>
+					<div class="flexContainer">
+						<p class="description"><h:outputText value="#{insurance.description}"/></p>
+					</div>
+					<hr/>
+					<div class="flexContainer">
+						<ui:fragment rendered="#{not empty insurance.insurancesHasTransportationriskses.toArray()}">
+							<div class="flexItem risksBox">
+								<p class="tableHeader"><h:outputText value="This insurance covers the following transportation risks:"/></p>
+								<table>
+									<tr>
+										<th>
+											<h:outputText value="Risk"/>
+										</th>
+										<th>
+											<h:outputText value="Cover"/>
+										</th>
+									</tr>
+									
+									<ui:repeat var="trisk" value="#{insurance.insurancesHasTransportationriskses.toArray()}">
+										<tr>
+											<td>
+												<strong><h:outputText value="#{trisk.transportationrisks.name}" /></strong>
+												<h:outputText value=" - #{trisk.transportationrisks.description}" />
+											</td>
+											<td>
+												<h:outputText value="#{trisk.cover}" />
+											</td>
+										</tr>
+									</ui:repeat>
+								</table>
+							</div>
+						</ui:fragment>
+						<ui:fragment rendered="#{not empty insurance.insurancesHasPlacesriskses.toArray()}">
+							<div class="flexItem risksBox">
+								<p class="tableHeader"><h:outputText value="This insurance covers the following location risks:"/></p>
+								<table>
+									<tr>
+										<th>
+											<h:outputText value="Risk"/>
+										</th>
+										<th>
+											<h:outputText value="Cover"/>
+										</th>
+									</tr>
+									<ui:repeat var="prisk" value="#{insurance.insurancesHasPlacesriskses.toArray()}">
+										<tr>
+											<td>
+												<strong><h:outputText value="#{prisk.placesrisks.name}" /></strong>
+												<h:outputText value=" - #{prisk.placesrisks.description}" />
+											</td>
+											<td>
+												<h:outputText value="#{prisk.cover}" />
+											</td>
+										</tr>
+									</ui:repeat>
+								</table>
+							</div>
+						</ui:fragment>
+					</div>
+				</div>
+			</ui:repeat>
+		</p:dialog>
+
+	</ui:define>
+</ui:composition>

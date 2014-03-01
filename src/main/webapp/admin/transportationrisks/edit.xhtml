@@ -1,0 +1,208 @@
+
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/admin/static/template.xhtml">
+
+
+	<ui:define name="breadcrumb">
+		<p:breadCrumb>
+			<p:menuitem value="#{msg.admin_menu_home}"
+				title="#{msg.admin_menu_home}" url="../index.jsf" />
+			<p:menuitem value="#{msg.admin_menu_risks}"
+				title="#{msg.admin_menu_risks}" url="#" />
+			<p:menuitem value="#{msg.admin_menu_risks_transportationrisks}"
+				title="#{msg.admin_menu_risks_transportationrisks}" url="main.jsf" />
+			<p:menuitem value="#{msg.admin_entity_edit}"
+				title="#{msg.admin_entity_edit}" url="#" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h1>
+			<h:outputText value="#{msg.admin_entity_edit}" />
+		</h1>
+
+		<h:form styleClass="adminForm">
+
+			<p:fieldset>
+				<p:panelGrid>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_name}" for="name" />
+							<p:inputText id="name"
+								value="#{transportationrisksBean.bean.name}" required="true"
+								requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="name"
+								value="#{msg.admin_transportationrisks_field_name_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="name" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="  " styleClass="requiredSymbol" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_description}"
+								for="description" />
+							<p:inputTextarea id="description"
+								value="#{transportationrisksBean.bean.description}" />
+							<p:tooltip for="description"
+								value="#{msg.admin_transportationrisks_field_description_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="description" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_transport}"
+								for="transport" />
+							<br />
+							<p:selectOneMenu id="transport" required="true"
+								requiredMessage="#{msg.required_field_message}"
+								value="#{transportationrisksBean.bean.transports}">
+								<f:converter binding="#{transportsConverter}" />
+								<f:selectItems value="#{transportationrisksBean.transportsList}"
+									var="transport" itemLabel="#{transport.name}"
+									itemValue="#{transport}" />
+							</p:selectOneMenu>
+							<p:tooltip for="transport"
+								value="#{msg.admin_transportationrisks_field_transport_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="transport" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="  " styleClass="requiredSymbol" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_riskfactor}"
+								for="riskfactor" />
+							<p:inputMask id="riskfactor"
+								value="#{transportationrisksBean.bean.riskFactor}"
+								mask="99999.99999" />
+							<p:tooltip for="riskfactor"
+								value="#{msg.admin_transportationrisks_field_riskfactor_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="riskfactor" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_frequency}"
+								for="frequency" />
+							<p:inputMask id="frequency"
+								value="#{transportationrisksBean.bean.frequency}" mask="9.99"
+								required="true" requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="frequency"
+								value="#{msg.admin_transportationrisks_field_frequency_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="frequency" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="  " styleClass="requiredSymbol" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_data}" for="data" />
+							<p:inputTextarea id="data"
+								value="#{transportationrisksBean.bean.data}" />
+							<p:tooltip for="data"
+								value="#{msg.admin_transportationrisks_field_data_tooltip}" />
+							<p:commandLink onclick="PF('jsonExplanation').show()">What is JSON?</p:commandLink>
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="data" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_cashcost}"
+								for="cashcost" />
+							<p:inputMask id="cashcost"
+								value="#{transportationrisksBean.bean.cashCost}"
+								mask="99999999.99" required="true"
+								requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="cashcost"
+								value="#{msg.admin_transportationrisks_field_cashcost_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="cashcost" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel
+								value="#{msg.admin_transportationrisks_field_energycost}"
+								for="energycost" />
+							<p:inputMask id="energycost"
+								value="#{transportationrisksBean.bean.energyCost}" mask="9999"
+								required="true" requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="energycost"
+								value="#{msg.admin_transportationrisks_field_energycost_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="energycost" />
+						</p:column>
+					</p:row>
+
+				</p:panelGrid>
+			</p:fieldset>
+
+			<br />
+
+
+			<p:toolbar>
+				<f:facet name="left">
+					<p:commandButton label="#{msg.admin_entity_save}"
+						value="#{msg.admin_entity_save}" title="#{msg.admin_entity_save}"
+						action="#{transportationrisksBean.update}"
+						icon="ui-icon ui-icon-disk" update="@form" ajax="false" />
+					<p:commandButton label="#{msg.admin_entity_cancel}"
+						value="#{msg.admin_entity_cancel}"
+						action="#{transportationrisksBean.cancel}"
+						title="#{msg.admin_entity_cancel}" icon="ui-icon ui-icon-cancel"
+						immediate="true" ajax="false" />
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<p:dialog id="jsonExplanation" widgetVar="jsonExplanation">
+			<p:graphicImage url="../static/img/json.png" style="max-height:70%" />
+		</p:dialog>
+	</ui:define>
+</ui:composition>

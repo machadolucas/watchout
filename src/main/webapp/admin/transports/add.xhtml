@@ -1,0 +1,108 @@
+
+<!DOCTYPE HTML>
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui"
+	template="/admin/static/template.xhtml">
+
+
+	<ui:define name="breadcrumb">
+		<p:breadCrumb>
+			<p:menuitem value="#{msg.admin_menu_home}"
+				title="#{msg.admin_menu_home}" url="../index.jsf" />
+			<p:menuitem value="#{msg.admin_menu_data}"
+				title="#{msg.admin_menu_data}" url="#" />
+			<p:menuitem value="#{msg.admin_menu_data_transports}"
+				title="#{msg.admin_menu_data_transports}" url="main.jsf" />
+			<p:menuitem value="#{msg.admin_entity_add}"
+				title="#{msg.admin_entity_add}" url="#" />
+		</p:breadCrumb>
+	</ui:define>
+
+	<ui:define name="content">
+
+		<h1>
+			<h:outputText value="#{msg.admin_entity_add}" />
+		</h1>
+
+		<h:form styleClass="adminForm" enctype="multipart/form-data">
+
+
+			<p:fieldset>
+				<p:panelGrid>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="* " styleClass="requiredSymbol"
+								title="This field is required" />
+							<h:outputLabel value="#{msg.admin_transports_field_name}" for="name" />
+							<p:inputText id="name" value="#{transportsBean.bean.name}"
+								required="true" requiredMessage="#{msg.required_field_message}" />
+							<p:tooltip for="name"
+								value="#{msg.admin_transports_field_name_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="name" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<h:outputText value="  " styleClass="requiredSymbol" />
+							<h:outputLabel value="#{msg.admin_transports_field_description}"
+								for="description" />
+							<p:inputTextarea id="description"
+								value="#{transportsBean.bean.description}" />
+							<p:tooltip for="description"
+								value="#{msg.admin_transports_field_description_tooltip}" />
+						</p:column>
+						<p:column styleClass="messagesColumn">
+							<p:message for="description" />
+						</p:column>
+					</p:row>
+
+					<p:row>
+						<p:column styleClass="inputColumn">
+							<br />
+							<h:outputLabel value="#{msg.admin_transports_field_icon}"
+								for="icon" />
+							<p:commandButton value="#{msg.admin_transports_field_icon_btn_remove}" ajax="false"
+								style="float:right;margin-top: -10px;" immediate="true"
+								actionListener="#{transportsBean.removeIcon}" />
+							<p:fileUpload id="icon"
+								fileUploadListener="#{transportsBean.handleIconUpload}"
+								mode="advanced" auto="true" update="iconPreview"
+								allowTypes="/(\.|\/)(gif|jpe?g|png)$/" />
+						</p:column>
+						<p:column>
+							<p:graphicImage id="iconPreview"
+								value="#{transportsBean.streamedIcon}" cache="false"
+								style="max-height:100px;max-width:200px;" />
+						</p:column>
+					</p:row>
+
+				</p:panelGrid>
+			</p:fieldset>
+
+			<br />
+
+
+			<p:toolbar>
+				<f:facet name="left">
+					<p:commandButton label="#{msg.admin_entity_save}"
+						value="#{msg.admin_entity_save}" title="#{msg.admin_entity_save}"
+						action="#{transportsBean.save}" icon="ui-icon ui-icon-disk"
+						update="@form" ajax="false" />
+					<p:commandButton label="#{msg.admin_entity_cancel}"
+						value="#{msg.admin_entity_cancel}" action="#{transportsBean.cancel}"
+						title="#{msg.admin_entity_cancel}" icon="ui-icon ui-icon-cancel"
+						immediate="true" ajax="false" />
+				</f:facet>
+			</p:toolbar>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
