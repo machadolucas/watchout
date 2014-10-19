@@ -62,6 +62,7 @@ sudo apt-get install -y mysql-server
 echo -e "\n==== Creating and configuring database ===="
 sudo cp /home/vagrant/watchout/.my.cnf /home/vagrant/
 su $WATCHOUT_USER -c mysql < /home/vagrant/watchout/CreateDb.sql
+su $WATCHOUT_USER -c mysql < /home/vagrant/watchout/PreConfiguredData.sql
 
 echo -e "\n==== Installing Java ===="
 # Java 8
