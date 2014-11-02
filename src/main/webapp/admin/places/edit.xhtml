@@ -198,7 +198,6 @@
 													required="true"
 													requiredMessage="#{msg.required_field_message}">
 													<f:validator binding="#{currencyValidator}" />
-													<p:ajax listener="#{placesBean.saveRelationDetails}" />
 												</p:inputText>
 												<p:tooltip for="moneycost"
 													value="#{msg.admin_places_field_moneycost_tooltip}" />
@@ -218,7 +217,6 @@
 													requiredMessage="#{msg.required_field_message}"
 													value="#{placesBean.relationBean.destination}"
 													disabled="#{empty placesBean.relationBean or placesBean.relationBean.id.placesDestination != 0}">
-													<p:ajax listener="#{placesBean.saveRelationDetails}" />
 													<f:converter binding="#{placesConverter}" />
 													<f:selectItems value="#{placesBean.list}" var="place"
 														itemLabel="#{place.name} - #{place.location}"
@@ -233,6 +231,14 @@
 											</p:column>
 											<p:column styleClass="messagesColumn">
 												<p:message for="destinationplace" />
+											</p:column>
+										</p:row>
+										<p:row>
+											<p:column colspan="2">
+												<p:commandButton label="#{msg.admin_entity_save}"
+													value="#{msg.admin_entity_save} Relation" title="#{msg.admin_entity_save}"
+													action="#{placesBean.saveRelationDetails}" icon="ui-icon ui-icon-disk"
+													update="@form" />
 											</p:column>
 										</p:row>
 									</p:panelGrid>
