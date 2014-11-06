@@ -78,6 +78,10 @@ h1,h2,h3,h4,h5,h6 {
 .ui-panelgrid.ui-widget tbody tr,.ui-panelgrid.ui-widget tbody tr td {
 	border: none;
 }
+.field.red {
+	background: rgba(255,20,20,0.6) !important;
+	color: white;
+}
 
 .fieldset-instructions {
 	font-weight: bold;

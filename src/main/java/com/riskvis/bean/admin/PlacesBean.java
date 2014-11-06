@@ -3,7 +3,9 @@ package com.riskvis.bean.admin;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
@@ -97,6 +99,9 @@ public class PlacesBean extends AbstractEntityBean<Places> {
 		if (relationsList != null && relationsList.size() > 0) {
 			relationsDuallist.setTarget(new ArrayList<PlacesHasTransports>(
 					relationsList));
+			for (PlacesHasTransports item : relationsDuallist.getTarget()) {
+				item.setRandomDifferenciator((int) (Math.random() * 1000000000));
+			}
 		} else {
 			relationsDuallist.setTarget(new ArrayList<PlacesHasTransports>());
 		}
@@ -113,46 +118,46 @@ public class PlacesBean extends AbstractEntityBean<Places> {
 			id.setTransportation(t.getIdtransports());
 			pht.setId(id);
 			pht.setTransports(t);
+			pht.setRandomDifferenciator((int) (Math.random() * 1000000000));
 			relationsSourceList.add(pht);
 		}
 	}
 
 	public void handleRelationsSelection(TransferEvent event) {
-		if (event.isAdd()) {
-			reloadRelationsSource();
-			relationsDuallist.setSource(relationsSourceList);
-			List addedRelations = event.getItems();
-			for (Object item : addedRelations) {
-				PlacesHasTransports pht = (PlacesHasTransports) item;
-				pht.setRandomDifferenciator((int) (Math.random() * 1000000000));
-			}
+		reloadRelationsSource();
+		relationsDuallist.setSource(relationsSourceList);
+		ListIterator<PlacesHasTransports> it = relationsDuallist.getTarget()
+				.listIterator();
+		List<PlacesHasTransports> newList = new LinkedList<PlacesHasTransports>();
+		while (it.hasNext()) {
+			PlacesHasTransports item = it.next();
+
+			PlacesHasTransportsId newId = new PlacesHasTransportsId();
+			newId.setTransportation(item.getId().getTransportation());
+			newId.setPlacesOrigin(item.getId().getPlacesOrigin());
+			newId.setPlacesDestination(item.getId().getPlacesDestination());
+
+			PlacesHasTransports newObject = new PlacesHasTransports();
+			newObject.setId(newId);
+			newObject.setTransports(item.getTransports());
+			newObject.setDestination(item.getDestination());
+			newObject.setMoneyCost(item.getMoneyCost());
+			newObject.setPlaces(item.getPlaces());
+			newObject
+					.setRandomDifferenciator((int) (Math.random() * 1000000000));
+			newList.add(newObject);
 		}
-		if (event.isRemove()) {
-			reloadRelationsSource();
-			relationsDuallist.setSource(relationsSourceList);
-		}
+		relationsDuallist.setTarget(newList);
 
 	}
 
-	/**
-	 * Save the details of the PlacesHasTransports relation
-	 */
-	public void saveRelationDetails() {
-		if (relationBean.getDestination() != null) {
-			relationBean.getId().setPlacesDestination(
-					relationBean.getDestination().getIdplaces());
-		}
-		if (relationBean.getTransports() != null) {
-			relationBean.getId().setTransportation(
-					relationBean.getTransports().getIdtransports());
-		}
-		for (int i = 0; i < relationsDuallist.getTarget().size(); i++) {
-			if (relationsDuallist.getTarget().get(i).getRandomDifferenciator() == relationBean
-					.getRandomDifferenciator()) {
-				relationsDuallist.getTarget().set(i, relationBean);
-				break;
+	public boolean getSaveDisabled() {
+		for (PlacesHasTransports item : relationsDuallist.getTarget()) {
+			if (item.getDestination() == null || item.getMoneyCost() == null) {
+				return true;
 			}
 		}
+		return false;
 	}
 
 	@Override
@@ -213,13 +218,14 @@ public class PlacesBean extends AbstractEntityBean<Places> {
 					placesHasTransportsService
 							.deletePlacesHasTransports(relation);
 				} else {
-					PlacesHasTransportsId idTemp = new PlacesHasTransportsId();
-					idTemp.setPlacesOrigin(bean.getIdplaces());
-					idTemp.setTransportation(relation.getTransports()
-							.getIdtransports());
-					PlacesHasTransports temp = new PlacesHasTransports();
-					temp.setId(idTemp);
-					placesHasTransportsService.deletePlacesHasTransports(temp);
+					// PlacesHasTransportsId idTemp = new
+					// PlacesHasTransportsId();
+					// idTemp.setPlacesOrigin(bean.getIdplaces());
+					// idTemp.setTransportation(relation.getTransports()
+					// .getIdtransports());
+					// PlacesHasTransports temp = new PlacesHasTransports();
+					// temp.setId(idTemp);
+					// placesHasTransportsService.deletePlacesHasTransports(temp);
 
 					PlacesHasTransports updated = relationsDuallist.getTarget()
 							.get(relationsDuallist.getTarget()

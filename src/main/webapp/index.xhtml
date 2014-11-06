@@ -230,9 +230,11 @@
 					<h:form>
 						<p>Choose a quest to start playing</p>
 						<p:outputPanel autoUpdate="true">
-							<p:dataScroller value="#{gameBean.quests}" var="quest"
-								chunkSize="10" mode="inline" scrollHeight="500">
-
+							<p:dataScroller value="#{gameBean.quests}" var="quest" chunkSize="4">
+							
+							<f:facet name="loader">
+					            <p:commandButton type="button" value="More"/>
+					        </f:facet>
 								<p:commandLink action="#{playerSessionBean.selectQuest(quest)}"
 									process="@this" update=":questDetail" 
 									oncomplete="PF('questDetail').show()">
